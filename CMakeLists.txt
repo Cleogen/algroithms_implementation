@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
-project(algorithms_implemetation)
+project(algorithms_implementation)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(algorithms_implemetation main.cpp Stack/Stack.cpp Stack/Stack.h)
+add_executable(algorithms_implementation main.cpp Stack/Stack.cpp Stack/Stack.h Queue/Queue.cpp Queue/Queue.h)

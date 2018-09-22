@@ -5,15 +5,13 @@
 #include <iostream>
 #include "Stack.h"
 
-Stack::Stack(int max_size) {
-    this->max_size = max_size;
+Stack::Stack(int max_size)
+        : max_size(max_size), m_top(-1), m_location(nullptr) {
     m_location = new int[max_size];
-    m_top = -1;
 }
 
-Stack::Stack(const Stack &stack) {
-    m_top = stack.m_top;
-    max_size = stack.max_size;
+Stack::Stack(const Stack &stack)
+        : max_size(stack.max_size), m_top(stack.m_top), m_location(nullptr) {
     m_location = new int[max_size];
     for (int i = 0; i <= m_top; ++i) {
         m_location[i] = stack.m_location[i];
@@ -24,10 +22,10 @@ Stack::~Stack() {
     delete[] m_location;
 }
 
-Stack &Stack::operator=(Stack stack1) {
-    if (&stack1 != this) {
+Stack &Stack::operator=(Stack stack) {
+    if (&stack != this) {
         delete[] m_location;
-        new Stack(stack1);
+        new Stack(stack);
     }
     return *this;
 }
