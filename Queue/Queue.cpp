@@ -6,12 +6,13 @@
 #include "Queue.h"
 
 Queue::Queue(int maxsize)
-        : m_maxsize(maxsize), m_front(-1), m_rear(-1), m_location(nullptr) {
+        : m_maxsize(maxsize), m_front(-1), m_rear(-1), m_size(0), m_location(nullptr) {
     m_location = new int[m_maxsize];
 }
 
 Queue::Queue(const Queue &queue)
-        : m_maxsize(queue.m_maxsize), m_front(queue.m_front), m_rear(queue.m_rear), m_location(nullptr) {
+        : m_maxsize(queue.m_maxsize), m_front(queue.m_front), m_rear(queue.m_rear), m_size(queue.m_size),
+          m_location(nullptr) {
     m_location = new int[m_maxsize];
     for (int i = 0; i < m_maxsize; ++i) {
         m_location[i] = queue.m_location[i];
@@ -31,19 +32,19 @@ Queue &Queue::operator=(const Queue &queue) {
 }
 
 int Queue::update_pos(int m) const {
-    return (m < m_maxsize - 1) ? m + 1 : -1;
+    return (m < m_maxsize - 1) ? m + 1 : 0;
 }
 
 bool Queue::empty() const {
-    return m_rear == m_front;
+    return m_size == 0;
 }
 
 bool Queue::full() const {
-    return update_pos(m_rear) == m_front;
+    return m_size == m_maxsize;
 }
 
 int Queue::size() const {
-    return abs(m_rear - m_front);
+    return m_size;
 }
 
 int &Queue::front() {
@@ -54,6 +55,7 @@ int &Queue::front() {
 
 void Queue::pop() {
     if (!empty()) {
+        --m_size;
         m_front = update_pos(m_front);
         m_location[m_front] = 0;
     } else {
@@ -63,6 +65,7 @@ void Queue::pop() {
 
 void Queue::push(const int &x) {
     if (!full()) {
+        ++m_size;
         m_rear = update_pos(m_rear);
         m_location[m_rear] = x;
     } else {

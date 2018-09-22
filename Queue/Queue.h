@@ -11,6 +11,7 @@ private:
     int m_maxsize;
     int m_front;
     int m_rear;
+    int m_size;
     int *m_location;
 
     int update_pos(int m) const;
