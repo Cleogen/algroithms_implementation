@@ -14,6 +14,14 @@ private:
     int *m_location;
 
 public:
+    Queue(int = 10);
+
+    Queue(const Queue &);
+
+    ~Queue();
+
+    Queue &operator=(const Queue &);
+
     bool empty() const;
 
     bool full() const;

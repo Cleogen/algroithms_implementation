@@ -8,7 +8,7 @@
 
 class Stack {
 private:
-    int max_size;
+    int m_maxsize;
     int m_top;
     int *m_location;
 

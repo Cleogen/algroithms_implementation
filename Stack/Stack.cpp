@@ -6,13 +6,13 @@
 #include "Stack.h"
 
 Stack::Stack(int max_size)
-        : max_size(max_size), m_top(-1), m_location(nullptr) {
-    m_location = new int[max_size];
+        : m_maxsize(max_size), m_top(-1), m_location(nullptr) {
+    m_location = new int[m_maxsize];
 }
 
 Stack::Stack(const Stack &stack)
-        : max_size(stack.max_size), m_top(stack.m_top), m_location(nullptr) {
-    m_location = new int[max_size];
+        : m_maxsize(stack.m_maxsize), m_top(stack.m_top), m_location(nullptr) {
+    m_location = new int[m_maxsize];
     for (int i = 0; i <= m_top; ++i) {
         m_location[i] = stack.m_location[i];
     }
@@ -35,7 +35,7 @@ bool Stack::empty() const {
 }
 
 bool Stack::full() const {
-    return size() == max_size;
+    return size() == m_maxsize;
 }
 
 int Stack::size() const {
@@ -43,13 +43,15 @@ int Stack::size() const {
 }
 
 int &Stack::top() {
+    if (empty()) {
+        std::cout << "Stack is empty!\n";
+    }
     return m_location[m_top];
 }
 
 void Stack::pop() {
     if (!empty()) {
-        std::cout << m_location[m_top] << " popped from stack\n";
-        m_location[m_top--] = 0;
+        --m_top;
     } else {
         std::cout << "Stack is empty!\n";
     }
@@ -57,7 +59,6 @@ void Stack::pop() {
 
 void Stack::push(const int &x) {
     if (!full()) {
-        std::cout << x << " pushed to stack\n";
         m_location[++m_top] = x;
     } else {
         std::cout << "Stack is full!\n";
