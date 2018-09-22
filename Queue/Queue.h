@@ -13,6 +13,8 @@ private:
     int m_rear;
     int *m_location;
 
+    int update_pos(int m) const;
+
 public:
     Queue(int = 10);
 

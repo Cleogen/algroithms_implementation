@@ -12,10 +12,12 @@ int main() {
         queue->pop();
         queue->display_queue();
     }
+    std::cout << queue->size() << " :size\n";
     for (int i = 1; i <= 5; ++i) {
         queue->push(i);
         queue->display_queue();
     }
+    std::cout << queue->size() << " :size\n";
     queue->display_queue();
     std::cout << queue->front() << "\n";
     return 0;

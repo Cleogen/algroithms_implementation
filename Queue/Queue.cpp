@@ -2,6 +2,7 @@
 // Created by ishkhan on 9/22/18.
 //
 
+#include <iostream>
 #include "Queue.h"
 
 Queue::Queue(int maxsize)
@@ -29,30 +30,51 @@ Queue &Queue::operator=(const Queue &queue) {
     return *this;
 }
 
+int Queue::update_pos(int m) const {
+    return (m < m_maxsize - 1) ? m + 1 : -1;
+}
+
 bool Queue::empty() const {
-    return false;
+    return m_rear == m_front;
 }
 
 bool Queue::full() const {
-    return false;
+    return update_pos(m_rear) == m_front;
 }
 
 int Queue::size() const {
-    return 0;
+    return abs(m_rear - m_front);
 }
 
 int &Queue::front() {
-    return <#initializer#>;
+    if (empty())
+        std::cout << "Queue is empty!\n";
+    return m_location[update_pos(m_front)];
 }
 
 void Queue::pop() {
-
+    if (!empty()) {
+        m_front = update_pos(m_front);
+        m_location[m_front] = 0;
+    } else {
+        std::cout << "Queue is empty!\n";
+    }
 }
 
-void Queue::push(const int &) {
-
+void Queue::push(const int &x) {
+    if (!full()) {
+        m_rear = update_pos(m_rear);
+        m_location[m_rear] = x;
+    } else {
+        std::cout << "Queue is full!\n";
+    }
 }
 
 void Queue::display_queue() {
-
+    int i = 0;
+    while (i < m_maxsize) {
+        std::cout << " | " << m_location[i];
+        ++i;
+    }
+    std::cout << "\n";
 }
