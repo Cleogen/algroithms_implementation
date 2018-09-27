@@ -6,7 +6,7 @@
 #include "Queue.h"
 
 Queue::Queue(int maxsize)
-        : m_maxsize(maxsize), m_front(-1), m_rear(-1), m_size(0), m_location(nullptr) {
+        : m_maxsize(maxsize), m_front(0), m_rear(0), m_size(0), m_location(nullptr) {
     m_location = new int[m_maxsize];
 }
 
@@ -81,7 +81,7 @@ void Queue::push(const int &x) {
 
 void Queue::display_queue() {
     int i = update_pos(m_front);
-	for (size_t j = 0; j < m_size; ++j){
+	for (size_t j = 0; j != m_size; ++j){
         std::cout << " | " << m_location[i];
         i = update_pos(i);
     }
