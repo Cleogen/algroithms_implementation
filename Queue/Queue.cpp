@@ -26,7 +26,14 @@ Queue::~Queue() {
 Queue &Queue::operator=(const Queue &queue) {
     if (&queue != this) {
         delete[] m_location;
-        new Queue(queue);
+		m_maxsize = queue.m_maxsize;
+		m_front = queue.m_front;
+		m_rear = queue.m_rear;
+		m_size = queue.m_size;
+		m_location = new int[m_maxsize];
+		for (int i = 0; i < m_maxsize; ++i) {
+			m_location[i] = queue.m_location[i];
+		}
     }
     return *this;
 }
