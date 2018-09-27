@@ -57,7 +57,6 @@ void Queue::pop() {
     if (!empty()) {
         --m_size;
         m_front = update_pos(m_front);
-        m_location[m_front] = 0;
     } else {
         std::cout << "Queue is empty!\n";
     }
@@ -74,10 +73,10 @@ void Queue::push(const int &x) {
 }
 
 void Queue::display_queue() {
-    int i = 0;
-    while (i < m_maxsize) {
+    int i = update_pos(m_front);
+	for (size_t j = 0; j < m_size; ++j){
         std::cout << " | " << m_location[i];
-        ++i;
+        i = update_pos(i);
     }
     std::cout << "\n";
 }
