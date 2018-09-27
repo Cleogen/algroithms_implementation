@@ -25,7 +25,12 @@ Stack::~Stack() {
 Stack &Stack::operator=(Stack stack) {
     if (&stack != this) {
         delete[] m_location;
-        new Stack(stack);
+		m_maxsize = stack.m_maxsize;
+		m_top = stack.m_top;
+		m_location = new int[m_maxsize];
+		for (int i = 0; i <= m_top; ++i) {
+			m_location[i] = stack.m_location[i];
+		}
     }
     return *this;
 }
