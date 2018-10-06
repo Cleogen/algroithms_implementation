@@ -18,5 +18,13 @@ int main() {
     std::cout << "\n";
     std::cout << linkedStack2.top() << "\n";
     std::cout << linkedStack3.top() << "\n";
+    for (int j = 0; j < 10; ++j) {
+        std::cout << linkedStack2.top() << ", ";
+        linkedStack2.pop();
+    }
+    for (int j = 0; j < 10; ++j) {
+        std::cout << linkedStack3.top() << ", ";
+        linkedStack3.pop();
+    }
     return 0;
 }

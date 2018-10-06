@@ -22,15 +22,13 @@ LinkedStack::LinkedStack(const LinkedStack &linkedStack)
         : m_size(linkedStack.m_size), m_top(nullptr) {
     if (!linkedStack.empty()) {
         m_top = new Node(linkedStack.m_top->m_info);
-        bool sec = true;
         Node *cop = linkedStack.m_top->m_link;
+        Node *prev = m_top;
         while (cop != nullptr) {
             Node *temp = new Node(cop->m_info);
+            prev->m_link = temp;
+            prev = temp;
             cop = cop->m_link;
-            if (sec) {
-                m_top->m_link = temp;
-                sec = false;
-            }
         }
     }
 }
@@ -40,15 +38,13 @@ LinkedStack &LinkedStack::operator=(const LinkedStack &linkedStack) {
         m_size = linkedStack.m_size;
         if (!linkedStack.empty()) {
             m_top = new Node(linkedStack.m_top->m_info);
-            bool sec = true;
             Node *cop = linkedStack.m_top->m_link;
+            Node *prev = m_top;
             while (cop != nullptr) {
                 Node *temp = new Node(cop->m_info);
+                prev->m_link = temp;
+                prev = temp;
                 cop = cop->m_link;
-                if (sec) {
-                    m_top->m_link = temp;
-                    sec = false;
-                }
             }
         }
     }
