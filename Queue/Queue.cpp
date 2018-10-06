@@ -6,7 +6,7 @@
 #include "Queue.h"
 
 Queue::Queue(int maxsize)
-        : m_maxsize(maxsize), m_front(0), m_rear(0), m_size(0), m_location(nullptr) {
+        : m_maxsize(maxsize + 1), m_front(0), m_rear(0), m_size(0), m_location(nullptr) {
     m_location = new int[m_maxsize];
 }
 
