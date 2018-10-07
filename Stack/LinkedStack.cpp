@@ -9,12 +9,10 @@ LinkedStack::LinkedStack()
         : m_size(0), m_top(nullptr) {}
 
 LinkedStack::~LinkedStack() {
-    if (!empty()) {
-        while (m_top->m_link != nullptr) {
-            Node *temp = m_top->m_link;
-            delete m_top;
-            m_top = temp;
-        }
+    while (m_top != nullptr) {
+        Node *temp = m_top->m_link;
+        delete m_top;
+        m_top = temp;
     }
 }
 
@@ -51,10 +49,9 @@ LinkedStack &LinkedStack::operator=(const LinkedStack &linkedStack) {
     return *this;
 }
 
-int LinkedStack::top() {
+int &LinkedStack::top() {
     if (empty()) {
         std::cout << "\nLinked Stack is empty!\n";
-        return 0;
     }
     return m_top->m_info;
 }

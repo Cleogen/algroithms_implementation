@@ -16,7 +16,7 @@ public:
 
     LinkedStack &operator=(const LinkedStack &);
 
-    int top();
+    int &top();
 
     int size() const;
 
@@ -33,7 +33,7 @@ private:
         int m_info;
         Node *m_link;
 
-        Node(int info = 0)
+        Node(int info)
                 : m_info(info), m_link(nullptr) {}
     };
 
