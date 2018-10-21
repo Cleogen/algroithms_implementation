@@ -1,5 +1,4 @@
 #include "SeqList.h"
-#include <iostream>
 
 std::ostream & operator<<(std::ostream& out,const SeqList &seqList)
 {
@@ -14,9 +13,7 @@ std::ostream & operator<<(std::ostream& out,const SeqList &seqList)
 }
 
 SeqList::SeqList(int maxsize)
-	:m_maxsize(maxsize)
-	,m_index(0)
-	,m_data(nullptr)
+        : m_maxsize(maxsize), m_index(-1), m_data(nullptr)
 {
 	m_data = new int[m_maxsize];
 }
@@ -109,24 +106,23 @@ void SeqList::pop_back()
 
 void SeqList::remove(const int &index)
 {
-	if (size != 0) {
-		for (int i = index; i < m_index; --i)
-		{
-			m_data[i] = m_data[i + 1];
-		}
-		--m_index;
-	}
-	else {
-		std::cout << "List is empty!\n";
-	}
+    if (index > size() || index < 0)
+        throw std::out_of_range("Index Invalid!");
+
+    for (int i = index; i < m_index; ++i)
+        m_data[i] = m_data[i + 1];
+
+    --m_index;
 }
 
 void SeqList::removeAll(const int &x)
 {
 	for (int i = 0; i < size(); ++i)
 	{
-		if (m_data[i] == x)
+        if (m_data[i] == x) {
 			remove(i);
+            --i;
+        }
 	}
 }
 
