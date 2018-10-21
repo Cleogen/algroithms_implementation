@@ -1,8 +1,8 @@
 #include <iostream>
-#include "SequencedList/SeqList.h"
+#include "Lists/SequencedList.h"
 
 int main() {
-    auto *seqList = new SeqList();
+    auto *seqList = new SequencedList();
 
     for (int i = 0; i < 45; ++i) {
         seqList->push_back(i);

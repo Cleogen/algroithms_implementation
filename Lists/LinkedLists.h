@@ -1,0 +1,14 @@
+//
+// Created by ishkhan on 10/21/18.
+//
+
+#ifndef ALGORITHMS_IMPLEMENTATION_LINKEDLISTS_H
+#define ALGORITHMS_IMPLEMENTATION_LINKEDLISTS_H
+
+
+class LinkedLists {
+
+};
+
+
+#endif //ALGORITHMS_IMPLEMENTATION_LINKEDLISTS_H
