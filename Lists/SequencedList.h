@@ -8,11 +8,8 @@ class SequencedList {
 
 public:
 	SequencedList(int = g_maxsize);
-
 	~SequencedList();
-
 	SequencedList(const SequencedList &);
-
 	SequencedList &operator=(const SequencedList &);
 	int& operator[](const int&);
 	const int& operator[](const int&) const;
