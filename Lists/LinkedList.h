@@ -6,7 +6,7 @@
 
 class LinkedList {
   
-friend std::ostream &operator << (std::ostream &, const LinkedList &);
+      friend std::ostream &operator << (std::ostream &, const LinkedList &);
 
 public:
       LinkedList();
