@@ -1,14 +1,17 @@
 //
 // Created by ishkhan on 10/21/18.
 //
+#pragma once
+#include <ostream>
 
-#ifndef ALGORITHMS_IMPLEMENTATION_LINKEDLISTS_H
-#define ALGORITHMS_IMPLEMENTATION_LINKEDLISTS_H
+class LinkedList {
+  
+friend std::ostream &operator << (std::ostream &, const LinkedList &);
 
-
-class LinkedLists {
-
+public:
+      LinkedList();
+      ~LinkedLIst();
+      LinkedList LinkedList(const LinkedList &);
+      
+  
 };
-
-
-#endif //ALGORITHMS_IMPLEMENTATION_LINKEDLISTS_H
