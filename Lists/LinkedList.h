@@ -16,15 +16,15 @@ public:
       int &operator[](const int &);
       const int &operator[](const int &) const;
 
+      bool empty() const;
+      int size() const;
       void push(const int &);
       void push_at_index(const int &index, const int &);
       void push_all(const int[] &);
       void pop();
-      void remove_all(const int &);
       void remove_at_index(const int &index);
+      void remove_all(const int &);
       void clear();
-      bool empty();
-      int size();
 
 private:
        struct Node{
