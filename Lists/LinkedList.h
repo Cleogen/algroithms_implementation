@@ -35,5 +35,6 @@ private:
           , m_info(info)
           {}
        }
-      int m_index;
+      int m_size;
+      Node* m_head;
 };
