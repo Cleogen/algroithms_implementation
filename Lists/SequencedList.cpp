@@ -101,7 +101,7 @@ void SequencedList::pop_back()
 	if (size() != 0)
 		--m_index;
 	else
-		std::cout << "List is empty!\n";
+		throw std::out_of_range("Index Invalid!");
 }
 
 void SequencedList::remove(const int &index)
