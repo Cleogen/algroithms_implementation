@@ -71,11 +71,11 @@ LinkedList &LinkedList::operator=(const LinkedList &linkedList)
 }
 
 LinkedList::Node& LinkedList::get_by_index(const int& index){
-    if (index >= m_size)
-        throw std::out_of_range("Index out of range!");
-
     Node* temp = m_head->m_link;
     int m_index = (index >= 0) ? index : m_size + index;
+
+    if (index >= m_size)
+        throw std::out_of_range("Index out of range!");
 
     for(int i = 0; i != index; ++i){
         temp = temp->m_link;
