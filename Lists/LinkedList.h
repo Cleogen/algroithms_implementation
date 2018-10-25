@@ -20,7 +20,7 @@ public:
       int size() const;
       void push(const int &);
       void push_at_index(const int &index, const int &);
-      void push_all(const int[] &);
+      void push_all(const int*, const int&);
       void pop();
       void remove_at_index(const int &index);
       void remove_all(const int &);

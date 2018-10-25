@@ -71,6 +71,9 @@ LinkedList &LinkedList::operator=(const LinkedList &linkedList)
 }
 
 LinkedList::Node& LinkedList::get_by_index(const int& index){
+    if (index >= m_size)
+        throw std::out_of_range("Index out of range!");
+
     Node* temp = m_head->m_link;
     int m_index = (index >= 0) ? index : m_size + index;
 
@@ -85,6 +88,9 @@ int &LinkedList::operator[](const int &index){
 }
 
 const int &LinkedList::operator[](const int &index) const{
+    if (index >= m_size)
+        throw std::out_of_range("Index out of range!");
+
     Node* temp = m_head->m_link;
     int m_index = (index >= 0) ? index : m_size + index;
 
@@ -124,8 +130,8 @@ void LinkedList::push_at_index(const int &index, const int &value){
     temp.m_link = next;
 }
 
-void LinkedList::push_all(const int* array){
-    for(int i = 0; i < sizeof(array)/sizeof(int); ++i){
+void LinkedList::push_all(const int* array, const int& size){
+    for(int i = 0; i < size; ++i){
         push(array[i]);
     }
 }
