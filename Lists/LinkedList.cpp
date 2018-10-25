@@ -103,11 +103,18 @@ int LinkedList::size() const{
 }
 
 void LinkedList::push(const int &value){
-    ++m_size;
     Node* temp = new Node(value);
-    temp->m_link = m_head->m_link;
-    m_head->m_link = temp;
+
+    if(m_head == nullptr){
+        temp->m_link = temp;
+    }
+    else{
+        temp->m_link = m_head->m_link;
+        m_head->m_link = temp;
+    }
+
     m_head = temp;
+    ++m_size;
 }
 
 void LinkedList::push_at_index(const int &index, const int &value){
