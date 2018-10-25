@@ -7,7 +7,7 @@ std::ostream &operator << (std::ostream &out,const LinkedList &linkedList)
 {
     out << "\n[";
     LinkedList::Node* temp = linkedList.m_head;
-	while(temp != nullptr)
+	for(int i = 0; i < linkedList.m_size; ++i)
     {
         out << temp->m_info << ", ";
         temp = temp->m_link;
@@ -19,17 +19,15 @@ std::ostream &operator << (std::ostream &out,const LinkedList &linkedList)
 LinkedList::LinkedList()
 : m_size(0)
 , m_head(nullptr)
-{
-    m_head = new Node(0);
-}
+{}
 
 LinkedList::~LinkedList()
 {
     Node* temp = m_head;
     while(m_head != nullptr){
-        delete m_head;
-        temp = temp->m_link;
-        m_head = temp;
+        m_head = m_head->m_link;
+        delete temp;
+        temp = m_head;
     }
 }
 
@@ -37,17 +35,15 @@ LinkedList::LinkedList(const LinkedList &linkedList)
 : m_size(linkedList.m_size)
 , m_head(nullptr)
 {
-    m_head = new Node(0);
-    if (m_size != 0){
-        Node* temp = linkedList.m_head->m_link;
-        Node* next = new Node(temp->m_info);
+    if (m_size > 0){
         m_head = new Node(linkedList.m_head->m_info);
-        m_head->m_link = next;
-        while(temp != nullptr)
-        {
-            temp = temp->m_link;
-            next->m_link = new Node(temp->m_info);
+        m_head->m_link = m_head;
+        Node* next = linkedList.m_head->m_link;
+        Node* prev = m_head;
+        for(int i = 1; i < m_size; ++i){
+            prev->m_link = new Node(next->m_info);
             next = next->m_link;
+            prev = prev->m_link;
         }
     }
 }
@@ -55,34 +51,43 @@ LinkedList::LinkedList(const LinkedList &linkedList)
 LinkedList &LinkedList::operator=(const LinkedList &linkedList)
 {
     if(this != &linkedList){
+
+        clear();
         m_size = linkedList.m_size;
-        m_head = new Node(0);
-        if (m_size != 0){
-            Node* temp = linkedList.m_head->m_link;
-            Node* next = new Node(temp->m_info);
+
+        if (m_size > 0){
             m_head = new Node(linkedList.m_head->m_info);
-            m_head->m_link = next;
-            while(temp != nullptr)
-            {
-                temp = temp->m_link;
-                next->m_link = new Node(temp->m_info);
+            m_head->m_link = m_head;
+            Node* next = linkedList.m_head->m_link;
+            Node* prev = m_head;
+            for(int i = 1; i < m_size; ++i){
+                prev->m_link = new Node(next->m_info);
                 next = next->m_link;
+                prev = prev->m_link;
             }
         }
     }
     return *this;
 }
 
-int &LinkedList::operator[](const int &index){
-    Node* temp = m_head;
+LinkedList::Node& LinkedList::get_by_index(const int& index){
+    Node* temp = m_head->m_link;
+    int m_index = (index >= 0) ? index : m_size + index;
+
     for(int i = 0; i != index; ++i){
         temp = temp->m_link;
     }
-    return temp->m_info;
+    return *temp;
+}
+
+int &LinkedList::operator[](const int &index){
+    return get_by_index(index).m_info;
 }
 
 const int &LinkedList::operator[](const int &index) const{
-    Node* temp = m_head;
+    Node* temp = m_head->m_link;
+    int m_index = (index >= 0) ? index : m_size + index;
+
     for(int i = 0; i != index; ++i){
         temp = temp->m_link;
     }
@@ -99,20 +104,17 @@ int LinkedList::size() const{
 
 void LinkedList::push(const int &value){
     ++m_size;
-    m_head->m_link = new Node(value);
-    m_head = m_head->m_link;
+    Node* temp = new Node(value);
+    temp->m_link = m_head->m_link;
+    m_head->m_link = temp;
+    m_head = temp;
 }
 
 void LinkedList::push_at_index(const int &index, const int &value){
-    Node* temp = m_head;
-    for(int i = 0; i < index; ++i){
-        temp = temp->m_link;
-    }
-    Node* next = temp->m_link;
-    Node* prev = temp;
-    temp = new Node(value);
-    temp->m_link = next;
-    prev->m_link = temp;
+    Node temp = get_by_index(index - 1);
+    Node* next = new Node(value);
+    next->m_link = temp.m_link;
+    temp.m_link = next;
 }
 
 void LinkedList::push_all(const int* array){
@@ -131,19 +133,15 @@ void LinkedList::pop(){
 }
 
 void LinkedList::remove_at_index(const int &index){
-    Node* temp = m_head;
-    for(int i = 0; i < index; ++i){
-        temp = temp->m_link;
-    }
-    Node* next = temp->m_link->m_link;
-    delete temp->m_link;
-    temp->m_link = next;
-    --m_size;
+    Node temp = get_by_index(index - 1);
+    Node* next = temp.m_link->m_link;
+    delete temp.m_link;
+    temp.m_link = next;
 }
 
 void LinkedList::remove_all(const int &value){
     Node* temp = m_head;
-    for(int i = 0; i != m_size; ++i){
+    for(int i = 0; i < m_size; ++i){
         if(temp->m_info == value){
             remove_at_index(i);
         }
@@ -152,11 +150,11 @@ void LinkedList::remove_all(const int &value){
 }
 
 void LinkedList::clear(){
-    Node* temp = m_head;
+    Node* t = m_head;
     while(m_head != nullptr){
-        delete m_head;
-        temp = temp->m_link;
-        m_head = temp;
+        m_head = m_head->m_link;
+        delete t;
+        t = m_head;
     }
     m_size = 0;
 }

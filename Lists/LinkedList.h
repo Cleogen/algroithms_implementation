@@ -12,9 +12,9 @@ public:
       LinkedList();
       ~LinkedList();
       LinkedList(const LinkedList &);
-      LinkedList &operator=(const LinkedList &);
-      int &operator[](const int &);
-      const int &operator[](const int &) const;
+      LinkedList& operator=(const LinkedList &);
+      int& operator[](const int &);
+      const int& operator[](const int &) const;
 
       bool empty() const;
       int size() const;
@@ -37,4 +37,5 @@ private:
        }
       int m_size;
       Node* m_head;
+      Node& get_by_index(const int& index);
 };
