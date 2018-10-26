@@ -6,7 +6,7 @@
 
 class LinkedList {
 
-      friend std::ostream &operator << (std::ostream &, const LinkedList &);
+      friend std::ostream &operator << (std::ostream& , const LinkedList &);
 
 public:
       LinkedList();
@@ -34,8 +34,8 @@ private:
           : m_link(nullptr)
           , m_info(info)
           {}
-       }
+       };
       int m_size;
       Node* m_head;
-      Node& get_by_index(const int& index);
+      Node* get_by_index(const int& index);
 };

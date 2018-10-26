@@ -1,16 +1,19 @@
 #include <iostream>
 #include "Lists/SequencedList.h"
+#include "Lists/LinkedList.h"
 
 int main() {
-    auto *seqList = new SequencedList();
+    auto *linkedList = new LinkedList();
+    linkedList->push(20);
+    linkedList->push(20);
+    linkedList->push(10);
+    linkedList->push_at_index(1,15);
+    linkedList->push_at_index(-1,20);
 
-    for (int i = 0; i < 45; ++i) {
-        seqList->push_back(i);
-        seqList->push_back(6);
-    }
-    seqList->removeAll(6);
-    seqList->add(40, 846);
+    std::cout << *linkedList;
 
-    std::cout << *seqList;
+
+    std::cout << linkedList[1];
+
     return 0;
 }

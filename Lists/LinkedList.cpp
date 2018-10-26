@@ -6,7 +6,7 @@
 std::ostream &operator << (std::ostream &out,const LinkedList &linkedList)
 {
     out << "\n[";
-    LinkedList::Node* temp = linkedList.m_head;
+    LinkedList::Node* temp = linkedList.m_head->m_link;
 	for(int i = 0; i < linkedList.m_size; ++i)
     {
         out << temp->m_info << ", ";
@@ -18,8 +18,7 @@ std::ostream &operator << (std::ostream &out,const LinkedList &linkedList)
 
 LinkedList::LinkedList()
 : m_size(0)
-, m_head(nullptr)
-{}
+, m_head(nullptr) {}
 
 LinkedList::~LinkedList()
 {
@@ -48,7 +47,7 @@ LinkedList::LinkedList(const LinkedList &linkedList)
     }
 }
 
-LinkedList &LinkedList::operator=(const LinkedList &linkedList)
+LinkedList& LinkedList::operator=(const LinkedList &linkedList)
 {
     if(this != &linkedList){
 
@@ -70,21 +69,8 @@ LinkedList &LinkedList::operator=(const LinkedList &linkedList)
     return *this;
 }
 
-LinkedList::Node& LinkedList::get_by_index(const int& index){
-    Node* temp = m_head->m_link;
-    int m_index = (index >= 0) ? index : m_size + index;
-
-    if (index >= m_size)
-        throw std::out_of_range("Index out of range!");
-
-    for(int i = 0; i != index; ++i){
-        temp = temp->m_link;
-    }
-    return *temp;
-}
-
 int &LinkedList::operator[](const int &index){
-    return get_by_index(index).m_info;
+    return get_by_index(index)->m_info;
 }
 
 const int &LinkedList::operator[](const int &index) const{
@@ -123,11 +109,25 @@ void LinkedList::push(const int &value){
     ++m_size;
 }
 
+LinkedList::Node* LinkedList::get_by_index(const int& index){
+    Node* temp = m_head->m_link;
+    int m_index = (index >= 0) ? index : m_size + index;
+
+    if (index >= m_size-1)
+        throw std::out_of_range("Index out of range!");
+
+    for(int i = 0; i != m_index; ++i){
+        temp = temp->m_link;
+    }
+    return temp;
+}
+
 void LinkedList::push_at_index(const int &index, const int &value){
-    Node temp = get_by_index(index - 1);
+    Node* temp = get_by_index(index - 1);
     Node* next = new Node(value);
-    next->m_link = temp.m_link;
-    temp.m_link = next;
+    next->m_link = temp->m_link;
+    temp->m_link = next;
+    ++m_size;
 }
 
 void LinkedList::push_all(const int* array, const int& size){
@@ -138,36 +138,43 @@ void LinkedList::push_all(const int* array, const int& size){
 
 void LinkedList::pop(){
     if(!empty()){
-        --m_size;
-        Node* temp = m_head->m_link;
-        delete m_head;
-        m_head = temp;
+        remove_at_index(-1);
+    }
+    else{
+        throw std::out_of_range("List is Empty!");
     }
 }
 
 void LinkedList::remove_at_index(const int &index){
-    Node temp = get_by_index(index - 1);
-    Node* next = temp.m_link->m_link;
-    delete temp.m_link;
-    temp.m_link = next;
+    Node* prev = get_by_index(index - 1);
+    Node* temp = prev->m_link;
+    prev->m_link = temp->m_link;
+    if(m_head == temp)
+        m_head = prev;
+    delete temp;
+    --m_size;
 }
 
 void LinkedList::remove_all(const int &value){
-    Node* temp = m_head;
+    Node* temp = m_head->m_link;
     for(int i = 0; i < m_size; ++i){
         if(temp->m_info == value){
+            temp = temp->m_link;
             remove_at_index(i);
+            --i;
         }
-        temp = temp->m_link;
+        else {
+            temp = temp->m_link;
+        }
     }
 }
 
 void LinkedList::clear(){
-    Node* t = m_head;
+    Node* temp = m_head;
     while(m_head != nullptr){
         m_head = m_head->m_link;
-        delete t;
-        t = m_head;
+        delete temp;
+        temp = m_head;
     }
     m_size = 0;
 }
