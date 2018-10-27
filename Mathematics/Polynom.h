@@ -30,9 +30,17 @@ private:
         , m_link(nullptr)
         {}
 	};
-    int m_size;
     Node* m_head;
     void add_term(const double& coeff, const double& power);
+    void remove_next_term(Node*);
 };
 
 Polynom operator+(Polynom p1, const Polynom& p2);
+Polynom operator-(Polynom p1, const Polynom& p2);
+Polynom operator*(Polynom p1, const Polynom& p2);
+Polynom operator/(Polynom p1, const Polynom& p2);
+Polynom operator+(Polynom p1, const double p2);
+Polynom operator-(Polynom p1, const double p2);
+Polynom operator*(Polynom p1, const double p2);
+Polynom operator/(Polynom p1, const double p2);
+
