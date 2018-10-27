@@ -172,10 +172,11 @@ void LinkedList::remove_all(const int &value){
 
 void LinkedList::clear(){
     Node* temp = m_head;
-    while(m_head != nullptr){
-        m_head = m_head->m_link;
-        delete temp;
-        temp = m_head;
-    }
+	Node* first = m_head;
+	do {
+		m_head = m_head->m_link;
+		delete temp;
+		temp = m_head;
+	} while (temp != first);
     m_size = 0;
 }
