@@ -4,64 +4,66 @@ Polynom::Polynom(double* coeffs, double* powers, int size)
 : m_size(size)
 , m_head(nullptr)
 {
-    m_head = new Node(coeffs[0],powers[0]);
-    m_head->m_link = m_head;
-
-    for (int i = 1; i < size; ++i){
-        Node* temp = new Node(coeffs[i],powers[i]);
-        temp->m_link = m_head->m_link;
-        m_head = temp;
-    }
+	m_head = new Node();
+	Node* temp = m_head;
+	for (int i = 0; i < size; ++i)
+	{
+		temp->m_link = new Node(coeffs[i], powers[i]);
+		temp = temp->m_link;
+	}
+	temp->m_link = m_head;
 }
 
 Polynom::~Polynom(){
-    Node* temp = m_head;
-    while(m_head != nullptr){
-        m_head = m_head->m_link;
-        delete temp;
-        temp = m_head;
-    }
+	Node* temp = m_head->m_link;
+	Node* prev = 0;
+	while (temp != m_head)
+	{
+		prev = temp;
+		temp = temp->m_link;
+		delete prev;
+	}
+	delete m_head;
 }
 
 Polynom::Polynom(const Polynom& polynom)
 : m_size(polynom.m_size)
 , m_head(nullptr)
 {
-    m_head = new Node(polynom.m_head->m_coeff,polynom.m_head->m_power);
-    m_head->m_link = m_head;
-    Node* temp = polynom.m_head->m_link;
-    Node* prev = m_head;
-
-    for(int i = 1; i < m_size; ++i){
-        Node* next = new Node(temp->m_coeff,temp->m_power);
-        next->m_link = prev->m_link;
-        prev->m_link = next;
-        prev = prev->m_link;
-    }
+	m_head = new Node();
+	Node* temp = polynom.m_head->m_link;
+	Node* prev = m_head;
+	while (temp != polynom.m_head)
+	{
+		prev->m_link = new Node(temp->m_coeff, temp->m_power);
+		prev = prev->m_link;
+		temp = temp->m_link;
+	}
+	prev->m_link = m_head;
 }
 
 Polynom& Polynom::operator=(const Polynom& polynom){
     if(this != &polynom){
         m_size = polynom.m_size;
 
-        Node* t = m_head;
-        while(m_head != nullptr){
-            m_head = m_head->m_link;
-            delete t;
-            t = m_head;
-        }
+		Node* t = m_head->m_link;
+		Node* p = 0;
+		while (t != m_head)
+		{
+			p = t;
+			t = t->m_link;
+			delete p;
+		}
 
-        m_head = new Node(polynom.m_head->m_coeff,polynom.m_head->m_power);
-        m_head->m_link = m_head;
-        Node* temp = polynom.m_head->m_link;
-        Node* prev = m_head;
-
-        for(int i = 1; i < m_size; ++i){
-            Node* next = new Node(temp->m_coeff,temp->m_power);
-            next->m_link = prev->m_link;
-            prev->m_link = next;
-            prev = prev->m_link;
-        }
+		Node* temp = polynom.m_head->m_link;
+		Node* prev = m_head;
+		while (temp != polynom.m_head)
+		{
+			prev->m_link = new Node(temp->m_coeff, temp->m_power);
+			prev = prev->m_link;
+			temp = temp->m_link;
+		}
+		prev->m_link = m_head;
     }
     return *this;
 }
