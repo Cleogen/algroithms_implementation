@@ -20,6 +20,8 @@ public:
     double value(const double &) const;
     double exponent() const;
 
+    void add_term(const double &coeff, const double &power);
+
     Polynom &derivative() const;
 
 private:
@@ -34,7 +36,6 @@ private:
         {}
 	};
     Node* m_head;
-    void add_term(const double& coeff, const double& power);
     void remove_next_term(Node*);
 };
 

@@ -169,37 +169,53 @@ double Polynom::exponent() const {
 }
 
 Polynom &Polynom::derivative() const {
-	return <#initializer#>;
+    auto *derived = new Polynom(*this);
+    Node *temp = derived->m_head;
+
+    while (temp->m_link != nullptr) {
+        temp->m_link->m_coeff *= temp->m_link->m_power;
+        if (--temp->m_link->m_power == -1) {
+            derived->remove_next_term(temp->m_link);
+        }
+    }
+
+    return *derived;
 }
 
 Polynom operator+(Polynom p1, const Polynom &p2) {
-	return Polynom(nullptr, nullptr, 0);
+    return p1 += p2;
 }
 
 Polynom operator-(Polynom p1, const Polynom &p2) {
-	return Polynom(nullptr, nullptr, 0);
+    return p1 -= p2;
 }
 
 Polynom operator*(Polynom p1, const Polynom &p2) {
-	return Polynom(nullptr, nullptr, 0);
+    return p1 *= p2;
 }
 
 Polynom operator/(Polynom p1, const Polynom &p2) {
-	return Polynom(nullptr, nullptr, 0);
+    return p1 /= p2;
 }
 
 Polynom operator+(Polynom &p1, const double p2) {
-    return Polynom(nullptr, nullptr, 0);
+    p1.add_term(p2, 0.0);
+    return p1;
 }
 
 Polynom operator-(Polynom &p1, const double p2) {
-    return Polynom(nullptr, nullptr, 0);
+    p1.add_term(-1 * p2, 0.0);
+    return p1;
 }
 
-Polynom operator*(Polynom p1, const double p2) {
-    return Polynom(nullptr, nullptr, 0);
+Polynom operator*(Polynom &p1, const double p2) {
+    auto temp = Polynom();
+    temp.add_term(p2, 0);
+    return p1 *= temp;
 }
 
 Polynom operator/(Polynom &p1, const double p2) {
-    return Polynom(nullptr, nullptr, 0);
+    auto temp = Polynom();
+    temp.add_term(p2, 0);
+    return p1 /= temp;
 }
