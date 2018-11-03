@@ -68,9 +68,13 @@ void Polynom::add_term(const double& coeff, const double& power){
     while(temp->m_link->m_power > power){
         temp = temp->m_link;
     }
-    Node* next = new Node(coeff,power);
-    next->m_link = temp->m_link;
-    temp->m_link = next;
+    if (temp->m_power == power) {
+        temp->m_coeff += coeff;
+    } else {
+        Node *next = new Node(coeff, power);
+        next->m_link = temp->m_link;
+        temp->m_link = next;
+    }
 }
 
 void Polynom::remove_next_term(Node* term){
@@ -80,10 +84,10 @@ void Polynom::remove_next_term(Node* term){
 }
 
 Polynom& Polynom::operator+=(const Polynom& polynom){
-    Node* one = m_head;
-    Node* two = polynom.m_head;
+    Node *one = m_head->m_link;
+    Node *two = polynom.m_head->m_link;
 
-    while(one->m_link->m_power != -1.0 && two->m_link->m_power != -1.0){
+    while (one->m_link != nullptr && two->m_link != nullptr) {
         if(one->m_link->m_power == two->m_link->m_power){
             if(one->m_link->m_coeff + two->m_link->m_coeff == 0.0){
                 remove_next_term(one);
@@ -107,17 +111,26 @@ Polynom& Polynom::operator-=(const Polynom& polynom){
     return *this += polynom * -1.0;
 }
 
-Polynom &Polynom::operator*=(const Polynom& polynom) {
-	Node* one = m_head;
-	Node* two = polynom.m_head;
+Polynom &Polynom::operator*=(const Polynom &polynom) {
+    Polynom copy = *this;
+    Node *two = polynom.m_head->m_link;
+    Node *one;
 
-	while (one != m_head){
-
-	}
+    while (two != nullptr) {
+        one = copy.m_head->m_link;
+        while (one != nullptr) {
+            double coeff = two->m_coeff * one->m_coeff;
+            double power = two->m_power + one->m_power;
+            add_term(coeff, power);
+            one = one->m_link;
+        }
+        two = two->m_link;
+    }
+    return *this;
 }
 
-Polynom &Polynom::operator/=(const Polynom &) {
-	return <#initializer#>;
+Polynom &Polynom::operator/=(const Polynom &polynom) {
+	
 }
 
 double Polynom::value(int &) const {
