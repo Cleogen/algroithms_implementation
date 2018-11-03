@@ -1,11 +1,13 @@
 class Polynom{
-    /*
+public:
+    Polynom();
+
+    /***
     * @param coeffs An non empty array of coefficients in descending order
     * @param powers An non empty array of powers in descending order
     * @param size the size of arrays
     * the coefficients and powers must respectfully have the same indexes
     */
-public:
     Polynom(double* coeffs, double* powers, int size);
     ~Polynom();
     Polynom(const Polynom&);
@@ -15,9 +17,10 @@ public:
     Polynom& operator*=(const Polynom&);
     Polynom& operator/=(const Polynom&);
 
-    double value(int&) const;
+    double value(const double &) const;
     double exponent() const;
-    Polynom& deriviative() const;
+
+    Polynom &derivative() const;
 
 private:
     struct Node{

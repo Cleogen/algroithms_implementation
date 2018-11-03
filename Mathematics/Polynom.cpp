@@ -1,4 +1,11 @@
+
 #include "Polynom.h"
+
+Polynom::Polynom()
+        : m_head(nullptr) {
+    m_head = new Node();
+    m_head->m_link = m_head;
+}
 
 Polynom::Polynom(double* coeffs, double* powers, int size)
 : m_head(nullptr){
@@ -130,18 +137,38 @@ Polynom &Polynom::operator*=(const Polynom &polynom) {
 }
 
 Polynom &Polynom::operator/=(const Polynom &polynom) {
-	
+    auto *result = new Polynom();
+    Node *numerator = m_head;
+    Node *denominator = polynom.m_head->m_link;
+    double coeff, power;
+
+    while (numerator->m_link->m_power >= denominator->m_power) {
+        coeff = numerator->m_link->m_coeff / denominator->m_coeff;
+        power = numerator->m_link->m_power - denominator->m_power;
+        auto *temp = new Polynom();
+        temp->add_term(coeff, power);
+        *this -= polynom * *temp;
+    }
+
+    return *result;
 }
 
-double Polynom::value(int &) const {
-	return 0;
+double Polynom::value(const double &x) const {
+    double result = 0;
+    Node *temp = m_head->m_link;
+
+    while (temp != nullptr) {
+        result += temp->m_coeff * pow(x, temp->m_power);
+    }
+
+    return result;
 }
 
 double Polynom::exponent() const {
-	return 0;
+    return m_head->m_link->m_power;
 }
 
-Polynom &Polynom::deriviative() const {
+Polynom &Polynom::derivative() const {
 	return <#initializer#>;
 }
 
