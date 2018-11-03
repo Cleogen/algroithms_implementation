@@ -1,4 +1,9 @@
+#include <cmath>
+#include <iostream>
+
 class Polynom{
+    friend std::ostream &operator<<(std::ostream &, Polynom &);
+
 public:
     Polynom();
 
@@ -9,18 +14,24 @@ public:
     * the coefficients and powers must respectfully have the same indexes
     */
     Polynom(double* coeffs, double* powers, int size);
+
     ~Polynom();
+
     Polynom(const Polynom&);
+
     Polynom& operator=(const Polynom&);
+
     Polynom& operator+=(const Polynom&);
+
     Polynom& operator-=(const Polynom&);
+
     Polynom& operator*=(const Polynom&);
+
     Polynom& operator/=(const Polynom&);
 
     double value(const double &) const;
-    double exponent() const;
 
-    void add_term(const double &coeff, const double &power);
+    double exponent() const;
 
     Polynom &derivative() const;
 
@@ -29,13 +40,15 @@ private:
         double m_coeff;
         double m_power;
         Node* m_link;
+
         Node(double coeff = 0.0, double power = -1.0)
-        : m_coeff(coeff)
-        , m_power(power)
-        , m_link(nullptr)
-        {}
-	};
+                : m_coeff(coeff), m_power(power), m_link(nullptr) {}
+    };
+
     Node* m_head;
+
+    void add_term(const double &coeff, const double &power);
+
     void remove_next_term(Node*);
 };
 

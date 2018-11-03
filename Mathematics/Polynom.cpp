@@ -1,4 +1,3 @@
-
 #include "Polynom.h"
 
 Polynom::Polynom()
@@ -71,12 +70,15 @@ Polynom& Polynom::operator=(const Polynom& polynom){
 }
 
 void Polynom::add_term(const double& coeff, const double& power){
-    Node* temp = m_head->m_link;
+    Node *temp = m_head;
     while(temp->m_link->m_power > power){
         temp = temp->m_link;
     }
-    if (temp->m_power == power) {
-        temp->m_coeff += coeff;
+
+    if (temp->m_link->m_power == power) {
+        if ((temp->m_link->m_coeff += coeff) == 0) {
+            remove_next_term(temp);
+        }
     } else {
         Node *next = new Node(coeff, power);
         next->m_link = temp->m_link;
@@ -91,23 +93,10 @@ void Polynom::remove_next_term(Node* term){
 }
 
 Polynom& Polynom::operator+=(const Polynom& polynom){
-    Node *one = m_head->m_link;
     Node *two = polynom.m_head->m_link;
 
-    while (one->m_link != nullptr && two->m_link != nullptr) {
-        if(one->m_link->m_power == two->m_link->m_power){
-            if(one->m_link->m_coeff + two->m_link->m_coeff == 0.0){
-                remove_next_term(one);
-            }
-            else
-            {
-                one->m_link->m_coeff += two->m_link->m_coeff;
-            }
-        }
-        else{
-            add_term(two->m_coeff,two->m_power);
-        }
-        one = one->m_link;
+    while (two != polynom.m_head) {
+        this->add_term(two->m_coeff, two->m_power);
         two = two->m_link;
     }
 
@@ -115,7 +104,11 @@ Polynom& Polynom::operator+=(const Polynom& polynom){
 }
 
 Polynom& Polynom::operator-=(const Polynom& polynom){
-    return *this += polynom * -1.0;
+    auto *temp = new Polynom();
+    temp->add_term(-1, 0);
+    Polynom res = polynom * *temp;
+    *this += res;
+    return *this;
 }
 
 Polynom &Polynom::operator*=(const Polynom &polynom) {
@@ -123,9 +116,9 @@ Polynom &Polynom::operator*=(const Polynom &polynom) {
     Node *two = polynom.m_head->m_link;
     Node *one;
 
-    while (two != nullptr) {
+    while (two != polynom.m_head) {
         one = copy.m_head->m_link;
-        while (one != nullptr) {
+        while (one != copy.m_head) {
             double coeff = two->m_coeff * one->m_coeff;
             double power = two->m_power + one->m_power;
             add_term(coeff, power);
@@ -157,7 +150,7 @@ double Polynom::value(const double &x) const {
     double result = 0;
     Node *temp = m_head->m_link;
 
-    while (temp != nullptr) {
+    while (temp != m_head) {
         result += temp->m_coeff * pow(x, temp->m_power);
     }
 
@@ -172,7 +165,7 @@ Polynom &Polynom::derivative() const {
     auto *derived = new Polynom(*this);
     Node *temp = derived->m_head;
 
-    while (temp->m_link != nullptr) {
+    while (temp->m_link != derived->m_head) {
         temp->m_link->m_coeff *= temp->m_link->m_power;
         if (--temp->m_link->m_power == -1) {
             derived->remove_next_term(temp->m_link);
@@ -180,6 +173,22 @@ Polynom &Polynom::derivative() const {
     }
 
     return *derived;
+}
+
+std::ostream &operator<<(std::ostream &out, Polynom &polynom) {
+    Polynom::Node *temp = polynom.m_head->m_link;
+    while (temp != polynom.m_head) {
+        if (temp->m_power > 1)
+            out << temp->m_coeff << "x^(" << temp->m_power << ") + ";
+        else if (temp->m_power == 1)
+            out << temp->m_coeff << "x + ";
+        else
+            out << temp->m_coeff;
+
+        temp = temp->m_link;
+    }
+    out << "\n";
+    return out;
 }
 
 Polynom operator+(Polynom p1, const Polynom &p2) {
@@ -191,31 +200,9 @@ Polynom operator-(Polynom p1, const Polynom &p2) {
 }
 
 Polynom operator*(Polynom p1, const Polynom &p2) {
-    return p1 *= p2;
+    return (p1 *= p2);
 }
 
 Polynom operator/(Polynom p1, const Polynom &p2) {
     return p1 /= p2;
-}
-
-Polynom operator+(Polynom &p1, const double p2) {
-    p1.add_term(p2, 0.0);
-    return p1;
-}
-
-Polynom operator-(Polynom &p1, const double p2) {
-    p1.add_term(-1 * p2, 0.0);
-    return p1;
-}
-
-Polynom operator*(Polynom &p1, const double p2) {
-    auto temp = Polynom();
-    temp.add_term(p2, 0);
-    return p1 *= temp;
-}
-
-Polynom operator/(Polynom &p1, const double p2) {
-    auto temp = Polynom();
-    temp.add_term(p2, 0);
-    return p1 /= temp;
 }
