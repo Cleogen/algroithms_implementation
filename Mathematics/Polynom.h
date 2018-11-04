@@ -6,7 +6,6 @@ class Polynom{
 
 public:
     Polynom();
-
     /***
     * @param coeffs An non empty array of coefficients in descending order
     * @param powers An non empty array of powers in descending order
@@ -29,9 +28,11 @@ public:
 
     Polynom& operator/=(const Polynom&);
 
+    Polynom &operator%=(const Polynom &);
+
     double value(const double &) const;
 
-    double exponent() const;
+    double rank() const;
 
     Polynom &derivative() const;
 
@@ -47,7 +48,7 @@ private:
 
     Node* m_head;
 
-    void add_term(const double &coeff, const double &power);
+    void add_term(const double &coeff, const double &power, const bool & = false);
 
     void remove_next_term(Node*);
 };
@@ -56,8 +57,6 @@ Polynom operator+(Polynom p1, const Polynom& p2);
 Polynom operator-(Polynom p1, const Polynom& p2);
 Polynom operator*(Polynom p1, const Polynom& p2);
 Polynom operator/(Polynom p1, const Polynom& p2);
-Polynom operator+(Polynom p1, const double p2);
-Polynom operator-(Polynom p1, const double p2);
-Polynom operator*(Polynom p1, const double p2);
-Polynom operator/(Polynom p1, const double p2);
+
+Polynom operator%(Polynom p1, const Polynom &p2);
 

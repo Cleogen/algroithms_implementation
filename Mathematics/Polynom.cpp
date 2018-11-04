@@ -69,16 +69,15 @@ Polynom& Polynom::operator=(const Polynom& polynom){
     return *this;
 }
 
-void Polynom::add_term(const double& coeff, const double& power){
+void Polynom::add_term(const double &coeff, const double &power, const bool &same) {
     Node *temp = m_head;
     while(temp->m_link->m_power > power){
         temp = temp->m_link;
     }
 
     if (temp->m_link->m_power == power) {
-        if ((temp->m_link->m_coeff += coeff) == 0) {
+        if ((temp->m_link->m_coeff += coeff) == 0)
             remove_next_term(temp);
-        }
     } else {
         Node *next = new Node(coeff, power);
         next->m_link = temp->m_link;
@@ -112,25 +111,29 @@ Polynom& Polynom::operator-=(const Polynom& polynom){
 }
 
 Polynom &Polynom::operator*=(const Polynom &polynom) {
-    Polynom copy = *this;
+    Polynom sum = Polynom();
+    Polynom temp = Polynom();
     Node *two = polynom.m_head->m_link;
     Node *one;
 
     while (two != polynom.m_head) {
-        one = copy.m_head->m_link;
-        while (one != copy.m_head) {
+        one = this->m_head->m_link;
+        while (one != this->m_head) {
             double coeff = two->m_coeff * one->m_coeff;
             double power = two->m_power + one->m_power;
-            add_term(coeff, power);
+            temp.add_term(coeff, power);
             one = one->m_link;
         }
+        sum += temp;
+        temp = Polynom();
         two = two->m_link;
     }
+    *this = sum;
     return *this;
 }
 
 Polynom &Polynom::operator/=(const Polynom &polynom) {
-    auto *result = new Polynom();
+    Polynom result = Polynom();
     Node *numerator = m_head;
     Node *denominator = polynom.m_head->m_link;
     double coeff, power;
@@ -138,12 +141,31 @@ Polynom &Polynom::operator/=(const Polynom &polynom) {
     while (numerator->m_link->m_power >= denominator->m_power) {
         coeff = numerator->m_link->m_coeff / denominator->m_coeff;
         power = numerator->m_link->m_power - denominator->m_power;
-        auto *temp = new Polynom();
-        temp->add_term(coeff, power);
-        *this -= polynom * *temp;
+        Polynom temp = Polynom();
+        result.add_term(coeff, power);
+        temp.add_term(coeff, power);
+        *this -= polynom * temp;
+    }
+    *this = result;
+    return *this;
+}
+
+Polynom &Polynom::operator%=(const Polynom &polynom) {
+    Polynom result = Polynom();
+    Node *numerator = m_head;
+    Node *denominator = polynom.m_head->m_link;
+    double coeff, power;
+
+    while (numerator->m_link->m_power >= denominator->m_power) {
+        coeff = numerator->m_link->m_coeff / denominator->m_coeff;
+        power = numerator->m_link->m_power - denominator->m_power;
+        Polynom temp = Polynom();
+        result.add_term(coeff, power);
+        temp.add_term(coeff, power);
+        *this -= polynom * temp;
     }
 
-    return *result;
+    return *this;
 }
 
 double Polynom::value(const double &x) const {
@@ -152,12 +174,13 @@ double Polynom::value(const double &x) const {
 
     while (temp != m_head) {
         result += temp->m_coeff * pow(x, temp->m_power);
+        temp = temp->m_link;
     }
 
     return result;
 }
 
-double Polynom::exponent() const {
+double Polynom::rank() const {
     return m_head->m_link->m_power;
 }
 
@@ -170,6 +193,7 @@ Polynom &Polynom::derivative() const {
         if (--temp->m_link->m_power == -1) {
             derived->remove_next_term(temp->m_link);
         }
+        temp = temp->m_link;
     }
 
     return *derived;
@@ -178,12 +202,14 @@ Polynom &Polynom::derivative() const {
 std::ostream &operator<<(std::ostream &out, Polynom &polynom) {
     Polynom::Node *temp = polynom.m_head->m_link;
     while (temp != polynom.m_head) {
-        if (temp->m_power > 1)
-            out << temp->m_coeff << "x^(" << temp->m_power << ") + ";
-        else if (temp->m_power == 1)
-            out << temp->m_coeff << "x + ";
-        else
-            out << temp->m_coeff;
+        out << ((temp->m_coeff > 0) ? " + " : " - ");
+        if (fabs(temp->m_coeff) != 1) {
+            out << fabs(temp->m_coeff);
+        }
+        out << "x";
+        if (temp->m_power > 1) {
+            out << "^" << temp->m_power;
+        }
 
         temp = temp->m_link;
     }
@@ -200,9 +226,13 @@ Polynom operator-(Polynom p1, const Polynom &p2) {
 }
 
 Polynom operator*(Polynom p1, const Polynom &p2) {
-    return (p1 *= p2);
+    return p1 *= p2;
 }
 
 Polynom operator/(Polynom p1, const Polynom &p2) {
     return p1 /= p2;
+}
+
+Polynom operator%(Polynom p1, const Polynom &p2) {
+    return p1 %= p2;
 }

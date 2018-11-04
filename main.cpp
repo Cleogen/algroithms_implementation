@@ -2,15 +2,14 @@
 #include "Mathematics/Polynom.h"
 
 int main() {
-    double coeffs[3] = {3, 4, 5};
-    double powers[3] = {2, 1, 0};
-    double coeffs2[2] = {1, -1};
-    double powers2[2] = {1, 0};
-    Polynom polynom = Polynom(coeffs, powers, 3);
-    Polynom polynom2 = Polynom(coeffs2, powers2, 2);
-    Polynom polynom3 = Polynom(polynom);
-    polynom -= polynom2;
+    double coeffs[4] = {7, 3, -1, -1};
+    double powers[4] = {6, 4, 3, 1};
+    double coeffs2[3] = {-3, 1, -1};
+    double powers2[3] = {6, 5, 0};
+    Polynom polynom = Polynom(coeffs, powers, 4);
+    Polynom polynom2 = Polynom(coeffs2, powers2, 3);
+    Polynom polynom3 = polynom * polynom2;
 
-    std::cout << polynom;
+    std::cout << polynom3;
     return 0;
 }
