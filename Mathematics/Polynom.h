@@ -34,7 +34,7 @@ public:
 
     double rank() const;
 
-    Polynom &derivative() const;
+    Polynom &derivative();
 
 private:
     struct Node{
