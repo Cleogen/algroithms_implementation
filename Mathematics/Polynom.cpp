@@ -184,19 +184,18 @@ double Polynom::rank() const {
     return m_head->m_link->m_power;
 }
 
-Polynom &Polynom::derivative() const {
-    auto *derived = new Polynom(*this);
-    Node *temp = derived->m_head;
+Polynom &Polynom::derivative() {
+    Node *temp = m_head;
 
     while (temp->m_link != derived->m_head) {
         temp->m_link->m_coeff *= temp->m_link->m_power;
         if (--temp->m_link->m_power == -1) {
-            derived->remove_next_term(temp->m_link);
+            remove_next_term(temp->m_link);
         }
         temp = temp->m_link;
     }
 
-    return *derived;
+    return *this;
 }
 
 std::ostream &operator<<(std::ostream &out, Polynom &polynom) {
