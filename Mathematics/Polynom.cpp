@@ -1,7 +1,7 @@
 #include "Polynom.h"
 
 Polynom::Polynom()
-        : m_head(nullptr) {
+: m_head(nullptr) {
     m_head = new Node();
     m_head->m_link = m_head;
 }
@@ -10,8 +10,7 @@ Polynom::Polynom(double* coeffs, double* powers, int size)
 : m_head(nullptr){
 	m_head = new Node();
 	Node* temp = m_head;
-	for (int i = 0; i < size; ++i)
-	{
+	for (int i = 0; i < size; ++i){
 		temp->m_link = new Node(coeffs[i], powers[i]);
 		temp = temp->m_link;
 	}
@@ -21,8 +20,7 @@ Polynom::Polynom(double* coeffs, double* powers, int size)
 Polynom::~Polynom(){
 	Node* temp = m_head->m_link;
 	Node* prev = nullptr;
-	while (temp != m_head)
-	{
+	while (temp != m_head){
 		prev = temp;
 		temp = temp->m_link;
 		delete prev;
@@ -35,8 +33,7 @@ Polynom::Polynom(const Polynom& polynom)
 	m_head = new Node();
 	Node* temp = polynom.m_head->m_link;
 	Node* prev = m_head;
-	while (temp != polynom.m_head)
-	{
+	while (temp != polynom.m_head){
 		prev->m_link = new Node(temp->m_coeff, temp->m_power);
 		prev = prev->m_link;
 		temp = temp->m_link;
@@ -44,27 +41,24 @@ Polynom::Polynom(const Polynom& polynom)
 	prev->m_link = m_head;
 }
 
-Polynom& Polynom::operator=(const Polynom& polynom){
-    if(this != &polynom){
+Polynom& Polynom::operator=(const Polynom& polynom) {
+    if (this != &polynom) {
+        Node *t = m_head->m_link;
+        Node *p = nullptr;
+        while (t != m_head) {
+            p = t;
+            t = t->m_link;
+            delete p;
+        }
 
-		Node* t = m_head->m_link;
-		Node* p = nullptr;
-		while (t != m_head)
-		{
-			p = t;
-			t = t->m_link;
-			delete p;
-		}
-
-		Node* temp = polynom.m_head->m_link;
-		Node* prev = m_head;
-		while (temp != polynom.m_head)
-		{
-			prev->m_link = new Node(temp->m_coeff, temp->m_power);
-			prev = prev->m_link;
-			temp = temp->m_link;
-		}
-		prev->m_link = m_head;
+        Node *temp = polynom.m_head->m_link;
+        Node *prev = m_head;
+        while (temp != polynom.m_head) {
+            prev->m_link = new Node(temp->m_coeff, temp->m_power);
+            prev = prev->m_link;
+            temp = temp->m_link;
+        }
+        prev->m_link = m_head;
     }
     return *this;
 }
@@ -187,7 +181,7 @@ double Polynom::rank() const {
 Polynom &Polynom::derivative() {
     Node *temp = m_head;
 
-    while (temp->m_link != derived->m_head) {
+    while (temp->m_link != m_head) {
         temp->m_link->m_coeff *= temp->m_link->m_power;
         if (--temp->m_link->m_power == -1) {
             remove_next_term(temp->m_link);
