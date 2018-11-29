@@ -1,15 +1,21 @@
 #include <iostream>
-#include "Mathematics/Polynom.h"
+#include "Trees/Heap.h"
 
 int main() {
-    double coeffs[4] = {7, 3, -1, -1};
-    double powers[4] = {6, 4, 3, 1};
-    double coeffs2[3] = {-3, 1, -1};
-    double powers2[3] = {6, 5, 0};
-    Polynom polynom = Polynom(coeffs, powers, 4);
-    Polynom polynom2 = Polynom(coeffs2, powers2, 3);
-    Polynom polynom3 = polynom * polynom2;
+    Heap heap = Heap();
+    int x = 0;
+    std::cout << "\n\ninsert\n\n";
 
-    std::cout << polynom3;
+    for (int i = 0; i < 20; ++i) {
+        std::cin >> x;
+        heap.insert(x);
+        std::cout << heap;
+    }
+    std::cout << "\n\nremove\n\n";
+
+    for (int j = 0; j < 5; ++j) {
+        heap.remove();
+        std::cout << heap;
+    }
     return 0;
 }
