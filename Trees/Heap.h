@@ -7,7 +7,7 @@ class Heap {
 
 public:
 
-    Heap(int maxsize = 10);
+    Heap(int maxsize = 42);
 
     ~Heap();
 
@@ -27,6 +27,4 @@ private:
     int m_maxsize;
 
     void copyTree(const int[]);
-
-    void swap(int &, int &);
 };

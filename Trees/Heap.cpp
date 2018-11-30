@@ -16,10 +16,12 @@ Heap::Heap(const Heap &heap)
 }
 
 Heap &Heap::operator=(const Heap &heap) {
-    delete[] m_tree;
-    m_size = heap.m_size;
-    m_maxsize = heap.m_maxsize;
-    copyTree(heap.m_tree);
+    if (this != &heap) {
+        delete[] m_tree;
+        m_size = heap.m_size;
+        m_maxsize = heap.m_maxsize;
+        copyTree(heap.m_tree);
+    }
     return *this;
 }
 
@@ -37,7 +39,7 @@ void Heap::insert(const int &value) {
     while (i > 0) {
         j = (i - 1) / 2;
         if (m_tree[i] > m_tree[j]) {
-            swap(m_tree[i], m_tree[j]);
+            std::swap(m_tree[i], m_tree[j]);
             i = j;
         } else {
             break;
@@ -55,7 +57,7 @@ void Heap::remove() {
         while (i < m_size) {
             j = (m_tree[2 * i + 1] > m_tree[2 * i + 2]) ? (2 * i + 1) : (2 * i + 2);
             if (m_tree[j] > m_tree[i]) {
-                swap(m_tree[i], m_tree[j]);
+                std::swap(m_tree[i], m_tree[j]);
                 i = j;
             } else {
                 break;
@@ -79,12 +81,6 @@ void Heap::copyTree(const int *tree) {
     for (int i = 0; i < m_size; ++i) {
         m_tree[i] = tree[i];
     }
-}
-
-void Heap::swap(int &x, int &y) {
-    int temp = x;
-    x = y;
-    y = temp;
 }
 
 std::ostream &operator<<(std::ostream &out, const Heap &heap) {
