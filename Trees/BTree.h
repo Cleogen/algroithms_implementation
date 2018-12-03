@@ -15,7 +15,7 @@ struct Node
     {}
 
 };
-
+/*
 void levelTR(Node* root)
 {
     if(root == nullptr)
@@ -80,4 +80,4 @@ bool isBtreeRude(Node* root){
         return true;
     
     return false;
-}
+}*/

@@ -34,7 +34,8 @@ bool SearchTree::empty() const {
 }
 
 void SearchTree::insert(const int &x) {
-    insert_node(new Node(x));
+    Node *temp = new Node(x);
+    insert_node(temp);
     ++m_size;
 }
 
@@ -43,6 +44,9 @@ void SearchTree::remove(const int &x) {
         throw std::out_of_range("Tree is empty");
 
     Node *temp = find_node(x);
+    if (temp == nullptr)
+        return;
+
     Node *left = temp->m_left;
     Node *right = temp->m_right;
 
@@ -70,18 +74,21 @@ Node *SearchTree::find_node(const int &x) const {
 
 void SearchTree::insert_node(Node *node) {
     Node *temp = m_root;
-    int x = node->m_info;
-    while (&temp->m_info != &x) {
-        if (x >= temp->m_info) {
-            if (temp->m_right != nullptr)
+    if (temp == nullptr) {
+        m_root = node;
+    } else {
+        while (temp != node) {
+            if (node->m_info >= temp->m_info) {
+                if (temp->m_right == nullptr) {
+                    temp->m_right = node;
+                }
                 temp = temp->m_right;
-            else
-                temp->m_right = node;
-        } else {
-            if (temp->m_left != nullptr)
+            } else {
+                if (temp->m_left == nullptr) {
+                    temp->m_left = node;
+                }
                 temp = temp->m_left;
-            else
-                temp->m_left = node;
+            }
         }
     }
 }
@@ -124,7 +131,22 @@ void SearchTree::clear() {
     }
 }
 
-//std::ostream &operator<<(std::ostream &out, const SearchTree &searchTree) {
-//    Node* root = searchTree.m_root;
-//    return out << root->m_info << "";
-//}
+std::ostream &operator<<(std::ostream &out, const SearchTree &searchTree) {
+    out << "[ ";
+    std::queue<Node *> leafs;
+    leafs.push(searchTree.m_root);
+    Node *temp = nullptr;
+    while (!leafs.empty()) {
+        temp = leafs.front();
+        if (temp->m_left != nullptr) {
+            leafs.push(temp->m_left);
+        }
+        if (temp->m_right != nullptr) {
+            leafs.push(temp->m_right);
+        }
+        leafs.pop();
+        out << temp->m_info << ", ";
+    }
+
+    return out;
+}
