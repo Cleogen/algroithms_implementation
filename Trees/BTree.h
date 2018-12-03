@@ -4,7 +4,7 @@
 
 struct Node
 {
-    char m_info;
+    int m_info;
     Node* m_left;
     Node* m_right;
     
