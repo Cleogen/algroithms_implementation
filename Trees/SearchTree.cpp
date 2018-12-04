@@ -43,20 +43,18 @@ void SearchTree::remove(const int &x) {
     if (empty())
         throw std::out_of_range("Tree is empty");
 
-    Node *temp = find_node(x);
+    Node *temp = m_root;
+    while (temp != nullptr) {
+        if (x == temp->m_info)
+            break;
+        else if (x > temp->m_info)
+            temp = temp->m_right;
+        else
+            temp = temp->m_left;
+    }
     if (temp == nullptr)
         return;
-
-    Node *left = temp->m_left;
-    Node *right = temp->m_right;
-
-    delete temp;
-    --m_size;
-
-    if (left != nullptr)
-        insert_node(left);
-    if (right != nullptr)
-        insert_node(right);
+    remove_node(temp);
 }
 
 Node *SearchTree::find_node(const int &x) const {
@@ -109,6 +107,20 @@ void SearchTree::copy(const SearchTree &searchTree) {
         }
         leafs.pop();
         insert(temp->m_info);
+    }
+}
+
+void SearchTree::remove_node(Node *&node) {
+    if (node->m_left == nullptr && node->m_right == nullptr) {
+        delete node;
+        node = nullptr;
+        --m_size;
+    } else if (node->m_left != nullptr) {
+        node->m_info = node->m_left->m_info;
+        remove_node(node->m_left);
+    } else {
+        node->m_info = node->m_right->m_info;
+        remove_node(node->m_right);
     }
 }
 
