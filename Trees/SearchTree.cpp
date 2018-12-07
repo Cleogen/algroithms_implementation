@@ -33,28 +33,22 @@ bool SearchTree::empty() const {
     return m_size == 0;
 }
 
-void SearchTree::insert(const int &x) {
-    Node *temp = new Node(x);
-    insert_node(temp);
-    ++m_size;
-}
-
 void SearchTree::remove(const int &x) {
     if (empty())
         throw std::out_of_range("Tree is empty");
 
-    Node *temp = m_root;
-    while (temp != nullptr) {
-        if (x == temp->m_info)
-            break;
-        else if (x > temp->m_info)
-            temp = temp->m_right;
-        else
-            temp = temp->m_left;
+}
+
+void SearchTree::insert(const int &x) {
+    Node **tempo = &m_root; // A pointer on the address of the root of the tree
+    while (*tempo != nullptr) { // check if that address is not null then
+        if ((*tempo)->m_info >= x) { // compare x with info of the tempo
+            tempo = &(*tempo)->m_left; // if x is smaller then change tempo address to the left node
+        } else {
+            tempo = &(*tempo)->m_right; // otherwise change tempo address to the right node
+        }
     }
-    if (temp == nullptr)
-        return;
-    remove_node(temp);
+    *tempo = new Node(x); // now when the address to which tempo points is null allocate a new memory for it
 }
 
 Node *SearchTree::find_node(const int &x) const {
@@ -68,27 +62,6 @@ Node *SearchTree::find_node(const int &x) const {
             temp = temp->m_left;
     }
     return nullptr;
-}
-
-void SearchTree::insert_node(Node *node) {
-    Node *temp = m_root;
-    if (temp == nullptr) {
-        m_root = node;
-    } else {
-        while (temp != node) {
-            if (node->m_info >= temp->m_info) {
-                if (temp->m_right == nullptr) {
-                    temp->m_right = node;
-                }
-                temp = temp->m_right;
-            } else {
-                if (temp->m_left == nullptr) {
-                    temp->m_left = node;
-                }
-                temp = temp->m_left;
-            }
-        }
-    }
 }
 
 void SearchTree::copy(const SearchTree &searchTree) {
@@ -107,20 +80,6 @@ void SearchTree::copy(const SearchTree &searchTree) {
         }
         leafs.pop();
         insert(temp->m_info);
-    }
-}
-
-void SearchTree::remove_node(Node *&node) {
-    if (node->m_left == nullptr && node->m_right == nullptr) {
-        delete node;
-        node = nullptr;
-        --m_size;
-    } else if (node->m_left != nullptr) {
-        node->m_info = node->m_left->m_info;
-        remove_node(node->m_left);
-    } else {
-        node->m_info = node->m_right->m_info;
-        remove_node(node->m_right);
     }
 }
 

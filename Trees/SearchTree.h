@@ -30,11 +30,7 @@ private:
 
     Node *find_node(const int &) const;
 
-    void remove_node(Node *&);
-
     void copy(const SearchTree &);
 
     void clear();
-
-    void insert_node(Node *);
 };
