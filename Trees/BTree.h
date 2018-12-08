@@ -75,6 +75,5 @@ class BTree {
             return (isBtreeRude(root->m_left) && isBtreeRude(root->m_right));
 
         return root->m_left == nullptr && root->m_right == nullptr;
-
     }
 };

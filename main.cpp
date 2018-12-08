@@ -15,7 +15,7 @@ int main() {
     std::cout << tree.find(x);
     for (int j = 0; j < 14; ++j) {
         std::cin >> x;
-        tree.remove(x);
+        tree.elegant_remove(x);
         std::cout << tree << "\n";
     }
     return 0;

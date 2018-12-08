@@ -20,9 +20,13 @@ public:
 
     bool empty() const;
 
+    void elegant_insert(const int &);
+
     void insert(const int&);
 
     void remove(const int&);
+
+    void elegant_remove(const int &);
 
 private:
     Node* m_root;
@@ -33,4 +37,6 @@ private:
     void copy(const SearchTree &);
 
     void clear();
+
+    void symmetric_next(Node *);
 };
