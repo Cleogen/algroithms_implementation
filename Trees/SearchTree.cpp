@@ -53,14 +53,28 @@ void SearchTree::elegant_remove(const int &x) {
             tempo = &(*tempo)->m_left;
 
 
+    Node *base = *tempo;
+
+    if ((*tempo)->m_right != nullptr) {
+        tempo = &(*tempo)->m_right;
+        while ((*tempo)->m_left != nullptr)
+            tempo = &(*tempo)->m_left;
+    }
+
+    base->m_info = (*tempo)->m_info;
+
     Node *dead = *tempo;
 
-    if (dead->m_right != nullptr)
+    if (dead->m_right != nullptr) {
         *tempo = dead->m_right;
-    else if (dead->m_left != nullptr)
+        delete dead;
+    } else if (dead->m_left != nullptr) {
         *tempo = dead->m_left;
-
-    delete dead;
+        delete dead;
+    } else {
+        delete *tempo;
+        *tempo = nullptr;
+    }
 }
 
 void SearchTree::elegant_insert(const int &x) {
