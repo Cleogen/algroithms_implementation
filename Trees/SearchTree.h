@@ -1,20 +1,23 @@
 #pragma once
-#include "BTree.h"
+
+#include <queue>
 #include "ostream"
 
+template<typename T>
 class SearchTree {
-    friend std::ostream &operator<<(std::ostream &, const SearchTree &);
+    template<typename E>
+    friend std::ostream &operator<<(std::ostream &, const SearchTree<E> &);
 
 public:
     SearchTree();
 
     ~SearchTree();
 
-    SearchTree(const SearchTree&);
+    SearchTree(const SearchTree<T> &);
 
-    SearchTree& operator=(const SearchTree&);
+    SearchTree<T> &operator=(const SearchTree<T> &);
 
-    bool find(const int&) const;
+    bool find(const int &);
 
     int count() const;
 
@@ -29,14 +32,21 @@ public:
     void elegant_remove(const int &);
 
 private:
+    struct Node {
+        T m_info;
+        Node *m_left;
+        Node *m_right;
+
+        Node(T info)
+                : m_info(info), m_left(nullptr), m_right(nullptr) {}
+    };
+
     Node* m_root;
     int m_size;
 
-    Node *find_node(const int &) const;
+    Node **find_node(const int &);
 
-    void copy(const SearchTree &);
+    void copy(const SearchTree<T> &);
 
     void clear();
-
-    void symmetric_next(Node *);
 };

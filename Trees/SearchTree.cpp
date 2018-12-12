@@ -1,18 +1,22 @@
 #include "SearchTree.h"
 
-SearchTree::SearchTree()
+template<typename T>
+SearchTree<T>::SearchTree()
     : m_size(0), m_root(nullptr) {}
 
-SearchTree::~SearchTree() {
+template<typename T>
+SearchTree<T>::~SearchTree() {
     clear();
 }
 
-SearchTree::SearchTree(const SearchTree &searchTree)
+template<typename T>
+SearchTree<T>::SearchTree(const SearchTree<T> &searchTree)
         : m_size(searchTree.m_size), m_root(nullptr) {
     copy(searchTree);
 }
 
-SearchTree &SearchTree::operator=(const SearchTree &searchTree) {
+template<typename T>
+SearchTree<T> &SearchTree<T>::operator=(const SearchTree<T> &searchTree) {
     if (this != &searchTree) {
         clear();
         m_size = searchTree.m_size;
@@ -21,76 +25,71 @@ SearchTree &SearchTree::operator=(const SearchTree &searchTree) {
     return *this;
 }
 
-bool SearchTree::find(const int &x) const {
+template<typename T>
+bool SearchTree<T>::find(const int &x) {
     return find_node(x) != nullptr;
 }
 
-int SearchTree::count() const {
+template<typename T>
+int SearchTree<T>::count() const {
     return m_size;
 }
 
-bool SearchTree::empty() const {
+template<typename T>
+bool SearchTree<T>::empty() const {
     return m_size == 0;
 }
 
-void SearchTree::remove(const int &x) {
+template<typename T>
+void SearchTree<T>::remove(const int &x) {
     if (empty())
         throw std::out_of_range("Tree is empty");
 
 }
 
-void SearchTree::elegant_remove(const int &x) {
+template<typename T>
+void SearchTree<T>::elegant_remove(const int &x) {
     if (empty())
         throw std::out_of_range("Tree is empty");
 
-    Node **tempo = &m_root;
-    while (*tempo != nullptr)
-        if (x == (*tempo)->m_info)
-            break;
-        else if (x > (*tempo)->m_info)
-            tempo = &(*tempo)->m_right;
-        else
+    Node **tempo = find_node(x);             // Get a pointer on the pointer node with info value x
+    if (tempo == nullptr)                    // if exists
+        return;
+    Node *dead = *tempo;                     // assign the target pointer node
+    if ((*tempo)->m_right != nullptr) {      // if it has right child
+        tempo = &(*tempo)->m_right;          // then move the pointer to the right child
+        while ((*tempo)->m_left != nullptr)  // and then while it has left child move the pointer to left
             tempo = &(*tempo)->m_left;
-
-
-    Node *base = *tempo;
-
-    if ((*tempo)->m_right != nullptr) {
-        tempo = &(*tempo)->m_right;
-        while ((*tempo)->m_left != nullptr)
-            tempo = &(*tempo)->m_left;
-    }
-
-    base->m_info = (*tempo)->m_info;
-
-    Node *dead = *tempo;
-
-    if (dead->m_right != nullptr) {
-        *tempo = dead->m_right;
-        delete dead;
-    } else if (dead->m_left != nullptr) {
+    }                                        // this way at the end tempo will point to the
+    // pointer node which is symmetric next to the target
+    dead->m_info = (*tempo)->m_info;         // change the target, by changing the info
+    dead = *tempo;                           // now the target is the symmetric next node
+    // which obviously can not have more than one child
+    if (dead->m_right != nullptr)            // if the child is right
+        *tempo = dead->m_right;              // connect right child and deprecate parent
+    else if (dead->m_left != nullptr)        // same for left
         *tempo = dead->m_left;
-        delete dead;
-    } else {
-        delete *tempo;
+    else                                     // if is a leaf then make the pointer null
         *tempo = nullptr;
-    }
+    delete dead;                             // delete the target
+    --m_size;
 }
 
-void SearchTree::elegant_insert(const int &x) {
-    Node **tempo = &m_root; // A pointer on the address of the root of the tree
-    while (*tempo != nullptr) { // check if that address is not null then
-        if ((*tempo)->m_info >= x) { // compare x with info of the tempo
-            tempo = &(*tempo)->m_left; // if x is smaller then change tempo address to the left node
-        } else {
-            tempo = &(*tempo)->m_right; // otherwise change tempo address to the right node
-        }
-    }
-    *tempo = new Node(x); // now when the address to which tempo points is null allocate a new memory for it
+template<typename T>
+void SearchTree<T>::elegant_insert(const int &x) {
+    Node **tempo = &m_root;                  // A pointer on the address of the root of the tree
+    while (*tempo != nullptr)                // check if that address is not null then
+        if ((*tempo)->m_info >= x)           // compare x with info of the tempo
+            tempo = &(*tempo)->m_left;       // if x is smaller then change tempo address to the left node
+        else
+            tempo = &(*tempo)->m_right;      // otherwise change tempo address to the right node
+    *tempo = new Node(x);                    // now when the address to which tempo
+    // points is null allocate a new memory for it
     ++m_size;
 }
 
-void SearchTree::insert(const int &x) {
+template<typename T>
+void SearchTree<T>::insert(const int &x) {
     if (m_root == nullptr) {
         m_root = new Node(x);
     } else {
@@ -111,78 +110,79 @@ void SearchTree::insert(const int &x) {
     ++m_size;
 }
 
-Node *SearchTree::find_node(const int &x) const {
-    Node *temp = m_root;
-    while (temp != nullptr) {
-        if (x == temp->m_info)
-            break;
-        else if (x > temp->m_info)
-            temp = temp->m_right;
+template<typename T>
+SearchTree::Node **SearchTree<T>::find_node(const int &x) {
+    Node **tempo = &m_root;
+    while (*tempo != nullptr)
+        if (x == (*tempo)->m_info)
+            return tempo;
+        else if (x > (*tempo)->m_info)
+            tempo = &(*tempo)->m_right;
         else
-            temp = temp->m_left;
-    }
-    return temp;
+            tempo = &(*tempo)->m_left;
+    return nullptr;
 }
 
-void SearchTree::copy(const SearchTree &searchTree) {
+template<typename T>
+void SearchTree<T>::copy(const SearchTree<T> &searchTree) {
     if (searchTree.m_root == nullptr)
         return;
     std::queue<Node *> leafs;
     leafs.push(searchTree.m_root);
     Node *temp = nullptr;
+
     while (!leafs.empty()) {
         temp = leafs.front();
-        if (temp->m_left != nullptr) {
+
+        if (temp->m_left != nullptr)
             leafs.push(temp->m_left);
-        }
-        if (temp->m_right != nullptr) {
+        if (temp->m_right != nullptr)
             leafs.push(temp->m_right);
-        }
+
         leafs.pop();
         insert(temp->m_info);
     }
 }
 
-void SearchTree::clear() {
+template<typename T>
+void SearchTree<T>::clear() {
     if (m_root == nullptr)
         return;
     std::queue<Node *> leafs;
     leafs.push(m_root);
     Node *temp = nullptr;
+
     while (!leafs.empty()) {
         temp = leafs.front();
-        if (temp->m_left != nullptr) {
+
+        if (temp->m_left != nullptr)
             leafs.push(temp->m_left);
-        }
-        if (temp->m_right != nullptr) {
+        if (temp->m_right != nullptr)
             leafs.push(temp->m_right);
-        }
+
         leafs.pop();
         delete temp;
     }
 }
 
-void SearchTree::symmetric_next(Node *root) {
-    if (root->m_left != nullptr) {
-        symmetric_next(root->m_left);
-    } else {
-        std::cout << root->m_info;
-    }
-}
-
-std::ostream &operator<<(std::ostream &out, const SearchTree &searchTree) {
+template<typename T>
+std::ostream &operator<<(std::ostream &out, const SearchTree<T> &searchTree) {
     out << "[ ";
+    if (searchTree.m_root == nullptr)
+        return out;
+
     std::queue<Node *> leafs;
     leafs.push(searchTree.m_root);
     Node *temp = nullptr;
+
     while (!leafs.empty()) {
         temp = leafs.front();
-        if (temp->m_left != nullptr) {
+
+        if (temp->m_left != nullptr)
             leafs.push(temp->m_left);
-        }
-        if (temp->m_right != nullptr) {
+        if (temp->m_right != nullptr)
             leafs.push(temp->m_right);
-        }
+
         leafs.pop();
         out << temp->m_info << ", ";
     }
