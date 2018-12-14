@@ -1,22 +1,22 @@
 #pragma once
 
-struct Node
-{
-    Node* m_left;
-    Node* m_right;
-    Node()
+struct LTNode {
+    LTNode *m_left;
+    LTNode *m_right;
+
+    LTNode()
         : m_left(nullptr)
         , m_right(nullptr)
     {}
 
-    virtual ~Node() {}
+    virtual ~LTNode() {}
 };
 
-struct Internal : Node
+struct Internal : LTNode
 {
     int m_count;
     Internal(int count)
-        : Node()
+            : LTNode()
         , m_count(count)
     {}
 
@@ -24,13 +24,23 @@ struct Internal : Node
 };
 
 template <typename T>
-struct External : Node
+struct External : LTNode
 {
     T m_info;
     External(const T& info = T())
-        : Node()
+            : LTNode()
         , m_info(info)
     {}
 
     virtual ~External() {}
+};
+
+template<typename T>
+struct STNode {
+    T m_info;
+    STNode *m_left;
+    STNode *m_right;
+
+    STNode(const T &info = new T())
+            : m_info(info), m_left(nullptr), m_right(nullptr) {}
 };
