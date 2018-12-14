@@ -193,20 +193,28 @@ template<typename T>
 void SearchTree<T>::copy(const SearchTree<T> &searchTree) {
     if (searchTree.m_root == nullptr)
         return;
-    std::queue<STNode<T> *> leafs;
-    leafs.push(searchTree.m_root);
-    STNode<T> *temp = nullptr;
+    std::queue<STNode<T> *> thatTree;
+    std::queue<STNode<T> **> myTree;
+    thatTree.push(searchTree.m_root);
+    myTree.push(&m_root);
+    STNode<T> *elder = nullptr;
+    STNode<T> **birth = nullptr;
 
-    while (!leafs.empty()) {
-        temp = leafs.front();
+    while (!thatTree.empty()) {
+        elder = thatTree.front();
+        birth = myTree.front();
+        *birth = new STNode<T>(elder->m_info);
 
-        if (temp->m_left != nullptr)
-            leafs.push(temp->m_left);
-        if (temp->m_right != nullptr)
-            leafs.push(temp->m_right);
-
-        leafs.pop();
-        insert(temp->m_info);
+        if (elder->m_left != nullptr) {
+            thatTree.push(elder->m_left);
+            myTree.push(&(*birth)->m_left);
+        }
+        if (elder->m_right != nullptr) {
+            thatTree.push(elder->m_right);
+            myTree.push(&(*birth)->m_right);
+        }
+        thatTree.pop();
+        myTree.pop();
     }
 }
 
