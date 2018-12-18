@@ -17,21 +17,29 @@ public:
 
     ListSearchTree<T>& operator=(const ListSearchTree<T> &);
 
+    T &operator[](const int &);
+
+    const T &operator[](const int &) const;
+
     void insert(const T &, const int &);
 
     void remove(const int &);
 
-    T& getByIndex(const int&);
+    int inline size() const { return m_size; };
 
 private:
     int m_size;
     LTNode *m_root;
-
+    enum Walker {
+        INSERT,
+        REMOVE,
+        SEARCH
+    };
     void clear();
 
     void copy(const ListSearchTree<T> &);
 
-    LTNode **find_node(int);
+    LTNode **find_node(int &, Walker = SEARCH);
 };
 
 
@@ -63,34 +71,20 @@ template<typename T>
 void ListSearchTree<T>::insert(const T &value, const int &k) {
     if (m_root == nullptr) {
         m_root = new External<T>(value);
-        ++m_size;
-        return;
-    }
-
-    int i = (k >= m_size) ? m_size - 1 : k;
-    LTNode **tempo = &m_root;
-    auto *caster = dynamic_cast<Internal *>(*tempo);
-    while (caster != nullptr) {
-        if (i >= caster->m_count) {
-            i -= caster->m_count;
-            tempo = &caster->m_right;
-        } else {
-            tempo = &caster->m_left;
-            ++caster->m_count;
-        }
-        caster = dynamic_cast<Internal *>(*tempo);
-    }
-
-    LTNode *old = *tempo;
-    *tempo = new Internal(1);
-    if (k >= m_size) {
-        (*tempo)->m_right = new External<T>(value);
-        (*tempo)->m_left = old;
     } else {
-        (*tempo)->m_left = new External<T>(value);
-        (*tempo)->m_right = old;
-    }
+        int i = k;
+        LTNode **tempo = find_node(i, INSERT);
+        LTNode *old = *tempo;
+        *tempo = new Internal(1);
 
+        if (k >= m_size) {
+            (*tempo)->m_right = new External<T>(value);
+            (*tempo)->m_left = old;
+        } else {
+            (*tempo)->m_left = new External<T>(value);
+            (*tempo)->m_right = old;
+        }
+    }
     ++m_size;
 }
 
@@ -99,29 +93,14 @@ void ListSearchTree<T>::remove(const int &k) {
     if (m_root == nullptr)
         return;
 
-    int i = (k >= m_size) ? m_size - 1 : k;
-    LTNode **tempo = &m_root;
+    int i = k;
+    LTNode **tempo = find_node(i, REMOVE);
     LTNode **odd = &m_root;
-    auto *caster = dynamic_cast<Internal *>(*odd);
 
-    while (caster != nullptr) {
-        tempo = odd;
-        if (i >= caster->m_count) {
-            i -= caster->m_count;
-            odd = &caster->m_right;
-        } else {
-            odd = &caster->m_left;
-            --caster->m_count;
-        }
-        caster = dynamic_cast<Internal *>(*odd);
-    }
-
-    caster = dynamic_cast<Internal *>(*tempo);
-
-    if (caster == nullptr) {
+    if (m_size == 1) {
         delete *odd;
         *odd = nullptr;
-    } else if (i > caster->m_count) {
+    } else if (i == 1) {
         odd = &(*tempo)->m_left;
         delete (*tempo)->m_right;
     } else {
@@ -132,11 +111,6 @@ void ListSearchTree<T>::remove(const int &k) {
     *tempo = *odd;
     delete dead;
     --m_size;
-}
-
-template<typename T>
-T &ListSearchTree<T>::getByIndex(const int &x) {
-    return dynamic_cast<External<T> *>(*find_node(x))->m_info;
 }
 
 template<typename T>
@@ -200,23 +174,36 @@ void ListSearchTree<T>::copy(const ListSearchTree<T> &tree) {
 }
 
 template<typename T>
-LTNode **ListSearchTree<T>::find_node(int k) {
+LTNode **ListSearchTree<T>::find_node(int &k, Walker walker) {
     if (m_root == nullptr)
         return nullptr;
 
     k = (k >= m_size) ? m_size - 1 : k;
     LTNode **tempo = &m_root;
-    auto *caster = dynamic_cast<Internal *>(*tempo);
+    LTNode **odd = &m_root;
+    int helper = 0;
+    auto *caster = dynamic_cast<Internal *>(*odd);
     while (caster != nullptr) {
+        tempo = odd;
+        k -= helper;
+
         if (k >= caster->m_count) {
-            k -= caster->m_count;
-            tempo = &caster->m_right;
+            helper = caster->m_count;
+            odd = &caster->m_right;
         } else {
-            tempo = &caster->m_left;
+            odd = &caster->m_left;
+            helper = 0;
+            if (walker == INSERT)
+                ++caster->m_count;
+            else if (walker == REMOVE)
+                --caster->m_count;
         }
-        caster = dynamic_cast<Internal *>(*tempo);
+        caster = dynamic_cast<Internal *>(*odd);
     }
-    return tempo;
+
+    if (walker == REMOVE)
+        return tempo;
+    return odd;
 }
 
 template<typename T>
@@ -243,6 +230,27 @@ std::ostream &operator<<(std::ostream &out, const ListSearchTree<T> &tree) {
             }
             tempo.pop();
         }
+        out << " }\n";
     }
-    return out << " }\n";
+    return out;
+}
+
+template<typename T>
+T &ListSearchTree<T>::operator[](const int &x) {
+    int i = x;
+    auto *tempo = dynamic_cast<External<T> *>(*find_node(i, SEARCH));
+    if (tempo != nullptr)
+        return tempo->m_info;
+    else
+        throw std::out_of_range("Tree is Empty");
+}
+
+template<typename T>
+const T &ListSearchTree<T>::operator[](const int &x) const {
+    int i = x;
+    auto *tempo = dynamic_cast<External<T> *>(*find_node(i, SEARCH));
+    if (tempo != nullptr)
+        return tempo->m_info;
+    else
+        throw std::out_of_range("Tree is Empty");
 }

@@ -22,8 +22,7 @@ int main() {
     std::cout << tree;
     for (int j = 0; j < 10; ++j) {
         std::cin >> x;
-        tree.remove(x);
-        std::cout << tree;
+        std::cout << tree[x];
     }
 
     return 0;
