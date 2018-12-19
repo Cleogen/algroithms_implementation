@@ -25,21 +25,23 @@ public:
 
     void remove(const int &);
 
-    int inline size() const { return m_size; };
+    int size() const { return m_size; };
+
+    bool empty() const { return m_root == nullptr; };
 
 private:
     int m_size;
     LTNode *m_root;
     enum Walker {
-        INSERT,
-        REMOVE,
-        SEARCH
+        Insert,
+        Remove,
+        Search
     };
     void clear();
 
     void copy(const ListSearchTree<T> &);
 
-    LTNode **find_node(int &, Walker = SEARCH);
+    LTNode **find_node(int &, Walker = Search);
 };
 
 
@@ -73,7 +75,7 @@ void ListSearchTree<T>::insert(const T &value, const int &k) {
         m_root = new External<T>(value);
     } else {
         int i = k;
-        LTNode **tempo = find_node(i, INSERT);
+        LTNode **tempo = find_node(i, Insert);
         LTNode *old = *tempo;
         *tempo = new Internal(1);
 
@@ -94,7 +96,7 @@ void ListSearchTree<T>::remove(const int &k) {
         return;
 
     int i = k;
-    LTNode **tempo = find_node(i, REMOVE);
+    LTNode **tempo = find_node(i, Remove);
     LTNode **odd = &m_root;
 
     if (m_size == 1) {
@@ -193,15 +195,15 @@ LTNode **ListSearchTree<T>::find_node(int &k, Walker walker) {
         } else {
             odd = &caster->m_left;
             helper = 0;
-            if (walker == INSERT)
+            if (walker == Insert)
                 ++caster->m_count;
-            else if (walker == REMOVE)
+            else if (walker == Remove)
                 --caster->m_count;
         }
         caster = dynamic_cast<Internal *>(*odd);
     }
 
-    if (walker == REMOVE)
+    if (walker == Remove)
         return tempo;
     return odd;
 }
@@ -238,7 +240,7 @@ std::ostream &operator<<(std::ostream &out, const ListSearchTree<T> &tree) {
 template<typename T>
 T &ListSearchTree<T>::operator[](const int &x) {
     int i = x;
-    auto *tempo = dynamic_cast<External<T> *>(*find_node(i, SEARCH));
+    auto *tempo = dynamic_cast<External<T> *>(*find_node(i, Search));
     if (tempo != nullptr)
         return tempo->m_info;
     else
@@ -248,7 +250,7 @@ T &ListSearchTree<T>::operator[](const int &x) {
 template<typename T>
 const T &ListSearchTree<T>::operator[](const int &x) const {
     int i = x;
-    auto *tempo = dynamic_cast<External<T> *>(*find_node(i, SEARCH));
+    auto *tempo = dynamic_cast<External<T> *>(*find_node(i, Search));
     if (tempo != nullptr)
         return tempo->m_info;
     else

@@ -42,5 +42,22 @@ struct STNode {
     STNode *m_right;
 
     STNode(const T &info = new T())
-            : m_info(info), m_left(nullptr), m_right(nullptr) {}
+            : m_info(info), m_left(nullptr), m_right(nullptr) {};
+
+    virtual ~STNode() {};
+};
+
+template<typename T>
+struct RBNode : STNode<T> {
+    enum Race {
+        Red,
+        Black
+    };
+    Race m_race;
+    RBNode<T> *m_parent;
+
+    RBNode(const RBNode<T> &parent, const T &info = new T(), const Race race = Black)
+            : STNode<T>(info), m_race(race), m_parent(parent) {};
+
+    virtual ~RBNode() {};
 };
