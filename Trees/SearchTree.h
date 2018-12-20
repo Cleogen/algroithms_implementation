@@ -39,7 +39,7 @@ protected:
 
     STNode<T> **find_node(const T &);
 
-    STNode<T> **insert_node_home(const T &);
+    STNode<T> **insert_node(const T &);
 
     STNode<T> **remove_node(const T &);
 
@@ -142,8 +142,7 @@ void SearchTree<T>::elegant_remove(const T &x) {
 
 template<typename T>
 void SearchTree<T>::elegant_insert(const T &x) {
-    insert_node_home(x) = new STNode<T>(x);
-    ++m_size;
+    insert_node(x);
 }
 
 /*
@@ -155,13 +154,16 @@ void SearchTree<T>::elegant_insert(const T &x) {
  * now when tempo points to a null, allocate a new memory with the x as info
  * */
 template<typename T>
-STNode<T> **SearchTree<T>::insert_node_home(const T &x) {
+STNode<T> **SearchTree<T>::insert_node(const T &x) {
     STNode<T> **tempo = &m_root;
     while (*tempo != nullptr)
         if ((*tempo)->m_info >= x)
             tempo = &(*tempo)->m_left;
         else
             tempo = &(*tempo)->m_right;
+
+    *tempo = new STNode<T>(x);
+    ++m_size;
     return tempo;
 }
 
