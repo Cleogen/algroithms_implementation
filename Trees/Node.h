@@ -56,8 +56,11 @@ struct RBNode : STNode<T> {
     Race m_race;
     RBNode<T> *m_parent;
 
-    RBNode(const RBNode<T> &parent = nullptr, const T &info = new T(), const Race race = Black)
-            : STNode<T>(info), m_race(race), m_parent(parent) {};
+    RBNode(const T &info = T(), const Race &race = Black)
+            : STNode<T>(info), m_race(race) {};
+
+    RBNode(RBNode<T> *parent, const T &info = T(), const Race &race = Black)
+            : m_parent(parent), STNode<T>(info), m_race(race) {};
 
     virtual ~RBNode() {};
 };

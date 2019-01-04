@@ -279,5 +279,5 @@ std::ostream &operator<<(std::ostream &out, const SearchTree<T> &searchTree) {
         out << temp->m_info << ", ";
     }
 
-    return out;
+    return out << "]\n";
 }
