@@ -27,19 +27,14 @@ public:
 
     void insert(const T &);
 
-    void remove(const T &);
-
     virtual void elegant_remove(const T &);
 
-private:
+protected:
     STNode<T> *m_root;
 
-protected:
     int m_size;
 
     STNode<T> **find_node(const T &);
-
-    STNode<T> **insert_node(const T &);
 
     STNode<T> **remove_node(const T &);
 
@@ -88,13 +83,6 @@ bool SearchTree<T>::empty() const {
     return m_size == 0;
 }
 
-template<typename T>
-void SearchTree<T>::remove(const T &x) {
-    if (empty())
-        throw std::out_of_range("Tree is empty");
-    elegant_remove(x);
-}
-
 /*
  * Gets a pointer on the pointer node with info value x
  * check if exists
@@ -140,10 +128,6 @@ void SearchTree<T>::elegant_remove(const T &x) {
     --m_size;
 }
 
-template<typename T>
-void SearchTree<T>::elegant_insert(const T &x) {
-    insert_node(x);
-}
 
 /*
  * Get a pointer to the pointer of the root of the tree
@@ -154,7 +138,7 @@ void SearchTree<T>::elegant_insert(const T &x) {
  * now when tempo points to a null, allocate a new memory with the x as info
  * */
 template<typename T>
-STNode<T> **SearchTree<T>::insert_node(const T &x) {
+void SearchTree<T>::elegant_insert(const T &x) {
     STNode<T> **tempo = &m_root;
     while (*tempo != nullptr)
         if ((*tempo)->m_info >= x)
@@ -164,7 +148,6 @@ STNode<T> **SearchTree<T>::insert_node(const T &x) {
 
     *tempo = new STNode<T>(x);
     ++m_size;
-    return tempo;
 }
 
 template<typename T>
@@ -174,24 +157,25 @@ STNode<T> **SearchTree<T>::remove_node(const T &) {
 
 template<typename T>
 void SearchTree<T>::insert(const T &x) {
-    if (m_root == nullptr) {
-        m_root = new STNode<T>(x);
-    } else {
-        STNode<T> *tempo = m_root;
-        STNode<T> *parent = m_root;
-        while (tempo != nullptr) {
-            parent = tempo;
-            if (tempo->m_info >= x)
-                tempo = tempo->m_left;
-            else
-                tempo = tempo->m_right;
-        }
-        if (parent->m_info >= x)
-            parent->m_left = new STNode<T>(x);
-        else
-            parent->m_right = new STNode<T>(x);
-    }
-    ++m_size;
+//    if (m_root == nullptr) {
+//        m_root = new STNode<T>(x);
+//    } else {
+//        STNode<T> *tempo = m_root;
+//        STNode<T> *parent = m_root;
+//        while (tempo != nullptr) {
+//            parent = tempo;
+//            if (tempo->m_info >= x)
+//                tempo = tempo->m_left;
+//            else
+//                tempo = tempo->m_right;
+//        }
+//        if (parent->m_info >= x)
+//            parent->m_left = new STNode<T>(x);
+//        else
+//            parent->m_right = new STNode<T>(x);
+//    }
+//    ++m_size;
+    elegant_insert(x);
 }
 
 template<typename T>

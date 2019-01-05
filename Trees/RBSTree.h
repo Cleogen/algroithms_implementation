@@ -29,8 +29,6 @@ public:
     virtual void elegant_remove(const T &);
 
 private:
-    RBNode<T> *m_root;
-
     void balance(RBNode<T> *);
 
     void rotate_left(RBNode<T> *);
@@ -43,13 +41,10 @@ private:
 };
 
 template<typename T>
-RBSTree<T>::RBSTree()
-        : SearchTree<T>() {}
+RBSTree<T>::RBSTree() {}
 
 template<typename T>
-RBSTree<T>::~RBSTree() {
-    this->clear();
-}
+RBSTree<T>::~RBSTree() {}
 
 template<typename T>
 RBSTree<T>::RBSTree(const RBSTree &tree)
@@ -67,30 +62,21 @@ RBSTree<T> &RBSTree<T>::operator=(const RBSTree &tree) {
 
 template<typename T>
 void RBSTree<T>::elegant_insert(const T &x) {
-    if (m_root == nullptr) {
-        m_root = new RBNode<T>(x, RBNode<T>::Black);
-        return;
-    }
-
-    STNode<T> *child = m_root;
+    STNode<T> **child = &this->m_root;
     STNode<T> *tempo = nullptr;
-    while (child != nullptr) {
-        tempo = child;
-        if (x < (child)->m_info)
-            child = (child)->m_left;
+
+    while (*child != nullptr) {
+        tempo = *child;
+        if (x < (*child)->m_info)
+            child = &(*child)->m_left;
         else
-            child = (child)->m_right;
+            child = &(*child)->m_right;
     }
 
-    auto *parent = dynamic_cast<RBNode<T> *>(tempo);
-    auto *leaf = new RBNode<T>(parent, x, RBNode<T>::Red);
+    *child = new RBNode<T>(dynamic_cast<RBNode<T> *>(tempo), x,
+                           (this->m_root == nullptr) ? RBNode<T>::Black : RBNode<T>::Red);
 
-    if (x < parent->m_info)
-        parent->m_left = leaf;
-    else
-        parent->m_right = leaf;
-
-    balance(leaf);
+    balance(dynamic_cast<RBNode<T> *>(*child));
 
     ++this->m_size;
 }
@@ -158,12 +144,10 @@ void RBSTree<T>::rotate_right(RBNode<T> *child) {
 
 template<typename T>
 void RBSTree<T>::push_darkness(RBNode<T> *grandpa) {
-    grandpa->m_race = RBNode<T>::Red;
+    if (grandpa != this->m_root)
+        grandpa->m_race = RBNode<T>::Red;
     dynamic_cast<RBNode<T> * >(grandpa->m_left)->m_race = RBNode<T>::Black;
     dynamic_cast<RBNode<T> * >(grandpa->m_right)->m_race = RBNode<T>::Black;
-
-    if (m_root->m_race == RBNode<T>::Red)
-        m_root->m_race = RBNode<T>::Black;
 
     balance(grandpa);
 }
@@ -175,7 +159,7 @@ std::ostream &operator<<(std::ostream &out, const RBSTree<T> &searchTree) {
         return out;
 
     std::queue<RBNode<T> *> leafs;
-    leafs.push(searchTree.m_root);
+    leafs.push(dynamic_cast<RBNode<T> *>(searchTree.m_root));
     RBNode<T> *temp = nullptr;
 
     while (!leafs.empty()) {
@@ -187,8 +171,8 @@ std::ostream &operator<<(std::ostream &out, const RBSTree<T> &searchTree) {
             leafs.push(dynamic_cast<RBNode<T> *>(temp->m_right));
 
         leafs.pop();
-        out << (temp->m_race == RBNode<T>::Red) ? "\033[31;1m" : "\033[30;1m"
-                << temp->m_info << "\033[0m, ";
+        out << ((temp->m_race == RBNode<T>::Red) ? "\033[31;1m" : "\033[30;1m")
+            << temp->m_info << "\033[0m, ";
     }
 
     return out << "] \n";
