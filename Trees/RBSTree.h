@@ -3,12 +3,6 @@
 #include <iostream>
 #include "SearchTree.h"
 
-/*
- * Հա, ուրեմն 1. Արմատն ու տերևները, այսինքն նիլ գագաթները սև են
- * 2.Կարմիրի որդին սև ա
- * 3. Արմատից տերև գնացող ամեն ճանապարհի սև գագաթների քանակը նույնն ա
- * */
-
 template<typename T>
 class RBSTree : public SearchTree<T> {
     template<typename E>
@@ -171,8 +165,16 @@ std::ostream &operator<<(std::ostream &out, const RBSTree<T> &searchTree) {
             leafs.push(dynamic_cast<RBNode<T> *>(temp->m_right));
 
         leafs.pop();
+
+#ifdef linux
         out << ((temp->m_race == RBNode<T>::Red) ? "\033[31;1m" : "\033[30;1m")
             << temp->m_info << "\033[0m, ";
+#endif
+
+#ifdef _WIN32
+        out << ((temp->m_race == RBNode<T>::Red) ? "R_" : "B_")
+            << temp->m_info << ", ";
+#endif
     }
 
     return out << "] \n";
