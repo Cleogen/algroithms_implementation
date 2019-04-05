@@ -47,7 +47,6 @@ float UnitConverter::step(int s, int e)  const {
 	while (!path.empty()) {
 		while (p_iter != p_end) {
 			while (r_iter != r_end) {
-
 				if ((*r_iter).first.first == (*p_iter).first)
 					v = {(*r_iter).first.second, (*p_iter).second * (*r_iter).second};
 				else if ((*r_iter).first.second == (*p_iter).first)
@@ -58,14 +57,9 @@ float UnitConverter::step(int s, int e)  const {
 				}
 				if (v.first == e)
 					return v.second;
-
-				if (path.find(v.first) == path.end()) {
-					r_iter = relations.erase(r_iter);
+				if (path.find(v.first) == path.end())
 					path.insert(v);
-				} else {
-					r_iter++;
-				}
-
+				r_iter = relations.erase(r_iter);
 			}
 			p_iter = path.erase(p_iter);
 			r_iter = relations.begin();
