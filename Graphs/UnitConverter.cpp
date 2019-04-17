@@ -1,11 +1,6 @@
 #include "UnitConverter.h"
 
-UnitConverter::UnitConverter() {
-	m_units = std::vector<std::string>();
-	m_relations = std::map<std::pair<int, int>, float>();
-}
-
-void UnitConverter::add_fact(const std::string &u1, const std::string &u2, const float &v1, const double &v2) {
+void UnitConverter::add_fact(const std::string &u1, const std::string &u2, const float &v1, const float &v2) {
 	auto rel = get_or_create_ids(u1, u2);
 	float ratio = v2 / v1;
 	auto item = m_relations.find(rel);
@@ -16,7 +11,7 @@ void UnitConverter::add_fact(const std::string &u1, const std::string &u2, const
 		(*item).second = ratio;
 }
 
-const std::pair<int, int> UnitConverter::get_or_create_ids(const std::string &u1, const std::string &u2) {
+std::pair<int, int> UnitConverter::get_or_create_ids(const std::string &u1, const std::string &u2) {
 	auto rel = get_ids(u1, u2);
 	if (rel.first == -1) {
 		m_units.push_back(u1);
@@ -40,15 +35,15 @@ float UnitConverter::step(int s, int e)  const {
 	auto v = std::make_pair(0, 1.0f);
 	auto relations = m_relations;
 	auto p_end = path.end();
-	auto r_end = relations.end();
+	auto r_end = relations.cend();
 	auto p_iter = path.begin();
-	auto r_iter = relations.begin();
+	auto r_iter = relations.cbegin();
 
 	while (!path.empty()) {
 		while (p_iter != p_end) {
 			while (r_iter != r_end) {
-				if ((*r_iter).first.first == (*p_iter).first)
-					v = {(*r_iter).first.second, (*p_iter).second * (*r_iter).second};
+				if (r_iter->first.first == p_iter->first)
+					v = {(*r_iter).first.second, p_iter->second * r_iter->second};
 				else if ((*r_iter).first.second == (*p_iter).first)
 					v = {(*r_iter).first.first, (*p_iter).second / (*r_iter).second};
 				else{
